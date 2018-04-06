@@ -32,29 +32,6 @@ project(nicaea)
 		target_link_libraries(nicaea ${GSL_LIBRARIES} ${FFTW_LIBRARIES} m)
 
 		#
-		# Build python module
-		#
-		#
-		find_package(PythonLibsNew)
-		if (NOT PYTHON_LIBRARIES)
-			message("-- Python library not found, cannot install pynicaea")
-		endif()
-		find_package(Boost 1.45.0 COMPONENTS python)
-		if (NOT Boost_LIBRARIES)
-			message("-- Boost not found, cannot install pynicaea")
-		endif()
-		if (PYTHON_LIBRARIES AND Boost_LIBRARIES)
-			message("-- Adding pynicaea to targets")
-			INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-
-			add_library(pynicaea SHARED python/bindings.cpp python/cosmo.cpp)
-			target_link_libraries(pynicaea nicaea ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-			set_target_properties(pynicaea PROPERTIES PREFIX "")
-			set_target_properties(pynicaea PROPERTIES OUTPUT_NAME "nicaea")
-		endif()
-
-
-		#
 		# Compiling executables
 		#
 		#
