@@ -8,7 +8,7 @@ project(nicaea)
 		#
 		# Loading dependencies
 		#
-		find_package(FFTW 3.1 REQUIRED)
+		find_package(FFTW REQUIRED)
 		find_package(GSL 1.8 REQUIRED)
 
     include_directories(${GSL_INCLUDE_DIRS} ${FFTW_INCLUDES})
