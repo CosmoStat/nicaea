@@ -1,0 +1,22 @@
+# Enable C++ support
+language: c
+
+# Compiler selection
+compiler:
+    - gcc
+    - clang
+
+sudo: required
+
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq cmake libgsl0-dev libfftw3-3
+
+install: true
+
+# Build steps
+script:
+    - mkdir build && cd build
+    - cmake ..
+    - make
+    - ctest -vv
