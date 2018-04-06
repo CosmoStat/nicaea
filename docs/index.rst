@@ -3,70 +3,35 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-nicaea v2.7 documentation
-=========================
+nicaea : NumerIcal Cosmology And lEnsing cAlculations
+=====================================================
+http://cosmostat.org/nicaea
 
-NumerIcal Cosmology And lEnsing cAlculations
 
-Version 2.7 (02/2017)
+nicaea is the cosmology part of cosmo_pmc, which can be downloaded for free at
+http://www.cosmopmc.info. From that site, the cosmo_pmc manual is available for
+further information about nicaea, which are more detailed than covered in this
+readme.
 
-Web page: http://cosmostat.org/nicaea
 
-********
 Authors:
-********
-
-Martin Kilbinger
-
-Karim Benabed
-
-Jean Coupon (HOD, halomodel)
-
-Henry J. McCracken (HOD)
+  - Martin Kilbinger
+  - Karim Benabed
+  - Jean Coupon (HOD, halomodel)
+  - Henry J. McCracken (HOD)
 
 Contributors:
+  - Liping Fu (decomp_eb)
+  - Catherine Heymans (intrinsic alignment)
+
+
+Documentation
 =============
-
-Liping Fu (decomp_eb)
-
-Catherine Heymans (intrinsic alignment)
-
-
-Contents:
 
 .. toctree::
    :maxdepth: 4
 
-   install
-   functions
    nicaea_2.7
-
-
-
-Acknowledgements
-================
-
-We thank Alexandre Boucaud, Jan Hartlap, Alina Kiessling, Jasmin Pielorz, Peter
-Schneider, Rob E. Smith, Patrick Simon, Masahiro Takada, and Melody Wolk for
-helpful suggestions.
-
-References
-==========
-
-.. bibliography:: astro.bib
-   :cited:
-   :style: mystyle
-   :encoding: utf
-
-
-
-Contact
-=======
-
-Feel free to email me at martin.kilbinger@cea.fr
-
-Have fun!
-   Martin Kilbinger
 
 
 Indices and tables
