@@ -17,7 +17,7 @@ project(nicaea)
 		#
 		# Compilation flags
 		#
-		set(CMAKE_C_FLAGS "-Wall -Wuninitialized -pedantic -wmissing-braces -O3 -fPIC -std=gnu9x")
+		set(CMAKE_C_FLAGS "-Wuninitialized -O3 -fPIC -std=gnu9x")
 
 		#
 		# Building nicaea library
