@@ -1,20 +1,18 @@
-# Enable C++ support
 language: c
 
-# Compiler selection
-compiler:
-    - gcc
-    - clang
-
-sudo: required
+os:
+  - linux
+  - osx
 
 before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get install -qq cmake libgsl0-dev libfftw3-dev
+    - if [[ $TRAVIS_OS_NAME == "linux" ]]; then sudo apt-get -qq update; fi
 
-install: true
+install:
+    - if ! [[ $TRAVIS_OS_NAME == "linux" ]]; then brew cask uninstall oclint; fi
+    - if ! [[ $TRAVIS_OS_NAME == "linux" ]]; then brew install fftw; fi
+    - if ! [[ $TRAVIS_OS_NAME == "linux" ]]; then brew install gsl; fi
+    - if [[ $TRAVIS_OS_NAME == "linux" ]]; then sudo apt-get install -y libfftw3-dev libgsl0-dev; fi
 
-# Build steps
 script:
     - mkdir build && cd build
     - cmake ..
