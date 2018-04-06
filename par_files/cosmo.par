@@ -43,9 +43,8 @@ sgrowth		growth_de
 sde_param	linder
 
 normmode	0		# Normalization mode.
-				#  0: normalization=sigma_8
-				#  1: normalization=A_s
+#  0: normalization=sigma_8
+#  1: normalization=A_s
 
 # Minimum scale factor
 a_min		0.1		# For late Universe stuff. Is updated if n(z) goes deeper
-
