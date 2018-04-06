@@ -1,0 +1,21 @@
+### 3rd-order lensing parameter file ###
+
+### Lensing ###
+cosmo_lens_file		cosmo_lens.par
+
+### 3rd-order parameters
+
+# Bispectrum mode
+#  PT		Perturbation Theory
+#  scocou01	Scoccimarro&Couchman (2001), Hyper-Extended
+#                Perturbation Theory (HEPT)
+sbispmode	scocou01
+
+# Intrinsic alignment
+sia		none
+
+# Source-lens clustering
+sslc		none
+#b_slc		1.0
+#gamma_slc	2.0
+

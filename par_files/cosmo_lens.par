@@ -1,0 +1,43 @@
+### Lensing parameter file ###
+
+### Cosmology
+cosmo_file	cosmo.par
+
+### Redshift distribution
+nofz_file	nofz.par
+
+
+### Lensing parameters
+
+# Correlations
+#  tomo_all		All correlations
+#  tomo_auto_only	Only auto-correlations (ii)
+#  tomo_cross_only	Only cross-correlations (i!=j)
+stomo		tomo_auto_only
+
+# Projection of matter power spectrum [Labels]
+#  limber		Limber approximation, k=l/f_K(w)			[L1Fl]
+#  limber_la08		Depreciated: extended Limber approximation,
+#			k=(l+1/2)/f_K(w) (Loverde & Afshordi 2008)		[ExtL1Fl]
+#  limber_la08_hyb      extended Limber, flat sky, hybrid                       [ExtL1FlHyb]
+#  limber_la08_sph      LA08 with spherical prefactor for P(l),
+#                       (l-1)l(l+1)(l+2)/(l+0.5)^4				[ExtL1Sph]
+#  limber2_la08         2nd-order Limber (LA08)					[ExtL2Fl]
+#  limber2_la08_hyb     2nd-order extended Limber, flat sky, hybrid             [ExtL2FlHyb]
+#  limber2_la08_sph     2nd-order Limber (LA08) with spherical prefactor 	[ExtL2Sph]
+#  full                 Full projection						[Full]
+sprojection	limber2_la08_sph
+
+# Reduced-shear correction
+#  none			No correction
+#  K10			Reduced-shear correction a la Kilbinger (2010)
+sreduced 	none
+
+# If sreduced!=none:
+#q_mag_size	1.0 	# q_mag_size = 2*(alpha+beta-1) (see K10 eq 16)
+
+# Intrinsic alignment
+# none			No contribution
+# HS04			Hirata & Seljak (2004) linear model
+sia		none
+

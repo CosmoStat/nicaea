@@ -1,0 +1,9 @@
+### SNIa parameter file ###
+
+### Cosmological parameters
+cosmo_file	cosmo.par
+
+### SNIa parameters
+
+#		-M    alpha -beta beta_z
+Theta2		19.31 1.6   -1.8  0.0
