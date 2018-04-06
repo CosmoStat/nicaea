@@ -666,12 +666,6 @@ includes the non-linear fitting formulae of Peacock & Dodds (1996).
   formula. Dark energy models are incorporated.
 
 
-Acknowledgements
-================
-
-We thank Alexandre Boucaud, Jan Hartlap, Alina Kiessling, Jasmin Pielorz, Peter
-Schneider, Rob E. Smith, Patrick Simon, Masahiro Takada, and Melody Wolk for
-helpful suggestions.
 
 References
 ==========
@@ -680,12 +674,3 @@ References
    :cited:
    :style: mystyle
    :encoding: utf
-
-
-Contact
-=======
-
-Feel free to email me at martin.kilbinger@cea.fr
-
-Have fun!
-   Martin Kilbinger
