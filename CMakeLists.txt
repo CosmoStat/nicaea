@@ -29,7 +29,7 @@ project(nicaea)
 		FILE(GLOB src_coyote "${PROJECT_SOURCE_DIR}/Coyote/src/*.c")
 		FILE(GLOB src_tools  "${PROJECT_SOURCE_DIR}/tools/src/*.c")
 		add_library(nicaea STATIC ${src_cosmo} ${src_halo} ${src_coyote} ${src_tools})
-		target_link_libraries(nicaea ${GSL_LIBRARIES} ${FFTW_LIBRARIES})
+		target_link_libraries(nicaea ${GSL_LIBRARIES} ${FFTW_LIBRARIES} m)
 
 		#
 		# Build python module
