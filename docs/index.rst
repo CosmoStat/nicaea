@@ -33,6 +33,18 @@ Documentation
 
    nicaea_2.7
 
+Acknowledgements
+================
+
+We thank Alexandre Boucaud, Jan Hartlap, Alina Kiessling, Jasmin Pielorz, Peter
+Schneider, Rob E. Smith, Patrick Simon, Masahiro Takada, and Melody Wolk for
+helpful suggestions.
+
+Contact
+=======
+
+Feel free to email me at martin.kilbinger@cea.fr
+
 
 Indices and tables
 ==================
