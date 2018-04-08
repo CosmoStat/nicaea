@@ -6,6 +6,10 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -24,6 +28,9 @@
 /* Maximal length of a short string config entry */
 #define CSLENS 1024
 
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 typedef enum {c_i, c_d, c_s} config_element_t;
 #define sconfig_element_t(i) ( \
@@ -109,6 +116,8 @@ config_element read_element(FILE *F, char *key, config_element c,
 		 "String \"%s\" expected but \"%s\" found instead in config file", *err, __LINE__,, str, stmp);
 
 
-
+#ifdef __cplusplus
+}}
 #endif
 
+#endif

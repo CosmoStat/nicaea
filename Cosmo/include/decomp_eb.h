@@ -7,6 +7,10 @@
 #ifndef __DECOMP_EB_H
 #define __DECOMP_EB_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include <stdio.h>
 #include <math.h>
@@ -33,6 +37,11 @@
 /* Maximum COSEBI mode. The code is accurate up *
  * to Nmax_cosebi = 13			        */
 #define NMAX_COSEBI     20
+
+
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 
 typedef enum {cheby, cheby2, legen, cosebi} poly_t;
@@ -105,5 +114,8 @@ double sum_combinations(int j, int n, const double *r, error **err);
 void xipmEB(double theta, double THETA_MIN, double THETA_MAX, const double *c, 
 	    const double *E, const double *B, int N, double xi_pm_EB[4], error **err);
 
+#ifdef __cplusplus
+}}
+#endif
 
 #endif

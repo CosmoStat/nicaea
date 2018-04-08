@@ -1,6 +1,9 @@
 #ifndef __REDUCED_FIT_H
 #define __REDUCED_FIT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +24,9 @@
 #define N_B    4
 #define N_C    4
 
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 extern const double B_fit[M_PAR][N_PL][N_B];
 extern const double C_fit[M_PAR][N_POLY][N_C];
@@ -46,5 +52,8 @@ double sum_a_for_Pg1(double logell, double a_min, int Na, double da, const doubl
 		     const double dpar[M_PAR]);
 int check_limits(const double dpar[M_PAR]);
 
+#ifdef __cplusplus
+}}
+#endif
 
 #endif

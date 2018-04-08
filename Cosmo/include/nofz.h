@@ -6,6 +6,10 @@
 #ifndef __NOFZ_H
 #define __NOFZ_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -34,6 +38,10 @@
 /* Maximum redshift in case of photometric redshift errors, where the *
  * distribution formally goes to infinity.                            */
 #define ZMAX 7
+
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 /* Distribution types and functions */
 typedef enum {ludo, jonben, ymmk, ymmk0const, cfhtlens, hist, single} nofz_t;
@@ -137,6 +145,10 @@ CHANGE(redshift);
 #undef CHANGE
 
 int change_zmean(redshift_t *, redshift_t *, error **err);
+
+#ifdef __cplusplus
+}}
+#endif
 
 
 #endif

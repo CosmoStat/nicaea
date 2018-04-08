@@ -6,6 +6,10 @@
 #ifndef __CMB_BAO_H
 #define __CMB_BAO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +22,9 @@
 #include "maths.h"
 #include "mvdens.h"
 
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 double z_star(cosmo *self);
 double acoustic_scale(cosmo *self, error **err);
@@ -31,5 +38,8 @@ double chi2_bao_A(cosmo *model, mvdens *g, const double *z_BAO, error **err);
 double chi2_bao_d_z(cosmo *model, mvdens *g, const double *z_BAO, error **err);
 double chi2_bao_D_V_ratio(cosmo *model, mvdens *g, const double *z_BAO, error **err);
 
+#ifdef __cplusplus
+}}
+#endif
 
 #endif

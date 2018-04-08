@@ -12,6 +12,10 @@ extern "C" {
 #endif
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef _NOFFTW_
 #include <fftw3.h>
 #endif
@@ -34,6 +38,10 @@ namespace nicaea {
 
 #define NR_END 1
 #define FREE_ARG char*
+
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 /* See cosmo.h */
 typedef enum {comp_c=0, comp_b=1, comp_nu=2} comp_t;
@@ -246,5 +254,9 @@ void hankel_kernel_tophat(double k, fftw_complex *res, error **err);
 }}
 #endif
 
+
+#ifdef __cplusplus
+}}
+#endif
 
 #endif

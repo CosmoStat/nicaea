@@ -7,6 +7,10 @@
 #ifndef __LENSING_H
 #define __LENSING_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +39,10 @@
 #include "decomp_eb.h"
 #include "reduced_fit.h"
 
+
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 /* Dimensions of interpolation tables */
 /* N_s was increased from 200 to 400, for linear tabulation of P_kappa */
@@ -421,6 +429,8 @@ CHANGE(gamma2);
 CHANGE(map2);
 #undef CHANGE
 
+#ifdef __cplusplus
+}}
+#endif
 
 #endif /* __LENSING_H */
-

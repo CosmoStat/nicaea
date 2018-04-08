@@ -23,6 +23,10 @@
 
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -47,6 +51,9 @@
 #endif
 #endif
 
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 #define __MVDENS_PARANOID_DEBUG__
 
@@ -173,5 +180,8 @@ mvdens* mvdens_hdfdwnp(char *fname,error **err);
 mix_mvdens* mix_mvdens_hdfdwnp(char *fname,error **err);
 #endif
 
+#ifdef __cplusplus
+}}
 #endif
 
+#endif
