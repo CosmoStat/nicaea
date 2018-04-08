@@ -50,7 +50,7 @@ void stringError(char* str, error *err);
 void printError(FILE* flog,error* err);
 int getErrorValue(error* err);
 
-void purgeError(error **err); 
+void purgeError(error **err);
 
 error* unpickleError(void* buf, int len);
 int pickleError(error* err, void** buf);
@@ -69,9 +69,9 @@ void endError(error **err);
 
 
 
-#define _DEBUGHERE_(extra,...) fprintf(stderr,"%s:("__FILE__":%d) "extra"\n",__func__,__LINE__,__VA_ARGS__);
+#define _DEBUGHERE_(extra,...) fprintf(stderr,"%s:(" __FILE__":%d) "extra"\n",__func__,__LINE__,__VA_ARGS__);
 
-#define someErrorVA(errV,txt,prev,next,li,...) newErrorVA(errV,__func__,"("__FILE__":"#li")",txt,prev,next,__VA_ARGS__)
+#define someErrorVA(errV,txt,prev,next,li,...) newErrorVA(errV,__func__,"(" __FILE__":"#li")",txt,prev,next,__VA_ARGS__)
 #define topErrorVA(errV,txt,next,li,...)       someErrorVA(errV,txt,NULL,next,li,__VA_ARGS__)
 #define oneErrorVA(errV,txt,li,...)            someErrorVA(errV,txt,NULL,NULL,li,__VA_ARGS__)
 #define addErrorVA(errV,txt,prev,li,...)       someErrorVA(errV,txt,prev,NULL,li,__VA_ARGS__)
@@ -109,7 +109,7 @@ void endError(error **err);
   isErrorReturn(err,ret)                    \
 }
 
-// tests 
+// tests
 #define testErrorVA(test,error_type,message,err,line,...) {  \
   if (test) {                                                \
     err=addErrorVA(error_type,message,err,line,__VA_ARGS__); \
