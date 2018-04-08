@@ -10,6 +10,9 @@
 #ifndef __ERRORLIST_H
 #define __ERRORLIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +23,10 @@
 #define TXT_SZ 4192
 #define WHR_SZ 2048
 #define TOT_SZ TXT_SZ+WHR_SZ
+
+#ifdef __cplusplus
+namespace nicaea {
+#endif
 
 typedef struct _err {
 	char errWhere[WHR_SZ];
@@ -147,4 +154,10 @@ void endError(error **err);
 error* initError(void);
 void endError(error **err);
 int _isError(error *err);
+
+#ifdef __cplusplus
+}}
+#endif
+
+
 #endif
