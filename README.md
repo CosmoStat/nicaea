@@ -1,4 +1,4 @@
-# nicaea [![Build Status](https://travis-ci.org/EiffL/nicaea.svg?branch=master)](https://travis-ci.org/EiffL/nicaea) [![Documentation Status](https://readthedocs.org/projects/nicaea/badge/?version=latest)](http://nicaea.readthedocs.io/en/latest/?badge=latest)
+# nicaea [![Build Status](https://travis-ci.org/CosmoStat/nicaea.svg?branch=master)](https://travis-ci.org/CosmoStat/nicaea) [![Documentation Status](https://readthedocs.org/projects/nicaea/badge/?version=latest)](http://nicaea.readthedocs.io/en/latest/?badge=latest)
                 
 Numerical routines to calculate cosmology and weak-lensing quantities.
 
