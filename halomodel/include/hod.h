@@ -6,10 +6,6 @@
 #ifndef __HOD_H
 #define __HOD_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -72,10 +68,6 @@ extern "C" {
 #define getIntValue(array,col)     atoi(array+NCHAR*(col-1))
 #define getCharValue(array,col)    array+NCHAR*(col-1)
 #define getLine(array,i)           array+NFIELD*NCHAR*i
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 #define Nhalodata_t 4
 typedef enum {w_of_theta, wp_rp, deltaSigma, smf} halodata_t; 
@@ -338,8 +330,5 @@ double wp_mwolk(cosmo_hm *model, double rp, error **err);
 double compute_chisq_wp(cosmo_hm *model, const wt_t *wth, double ngd_obs, double ngd_err,
 			ngal_fit_t ngal_fit_type, double *ngd, int dologw, error **err);
 
-#ifdef __cplusplus
-}}
-#endif
 
 #endif

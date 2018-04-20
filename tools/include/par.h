@@ -1,19 +1,11 @@
 #ifndef __PAR_H
 #define __PAR_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 
 #include "errorlist.h"
 #include "io.h"
 #include "config.h"
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 /* Parameters */
 typedef enum {
@@ -152,9 +144,5 @@ typedef enum {
 par_t *copy_par_t(const par_t *par, int npar, error **err);
 void spar_to_par(par_t **par, int npar, const char *spar[], error **err);
 
-
-#ifdef __cplusplus
-}}
-#endif
 
 #endif

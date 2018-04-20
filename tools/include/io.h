@@ -6,10 +6,6 @@
 #ifndef __IO_H
 #define __IO_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -33,9 +29,7 @@ extern "C" {
 #define io_inconsistent -5 + io_base
 #define io_directory    -6 + io_base
 
-#ifdef __cplusplus
-namespace nicaea {
-#endif
+
 
 unsigned int numberoflines(const char *, error **err);
 unsigned int numberoflines_comments(const char *name, unsigned int *ncomment, error **err);
@@ -79,9 +73,5 @@ int is_directory(const char *path);
 time_t start_time(FILE *FOUT);
 void end_time(time_t t_start, FILE *FOUT);
 void end_clock(clock_t c_start, FILE *FOUT);
-
-#ifdef __cplusplus
-}}
-#endif
 
 #endif

@@ -13,7 +13,7 @@ redshift_t *init_redshift_empty(int Nzbin, int Nnz_max, error **err)
    redshift_t *res;
 
    res = malloc_err(sizeof(redshift_t), err);   forwardError(*err, __LINE__, NULL);
-
+ 
    res->Nzbin     = Nzbin;
    res->Nnz       = calloc_err(Nzbin, sizeof(int), err);                forwardError(*err, __LINE__, NULL);
    res->Nnz_max   = Nnz_max;
@@ -57,7 +57,7 @@ redshift_t *init_redshift(int Nzbin, const int *Nnz, const nofz_t *nofz, const p
    for (n=0,res->Nnz_max=-1; n<Nzbin; n++) {
       if (res->Nnz[n]>res->Nnz_max) res->Nnz_max = res->Nnz[n];
    }
-
+   
    res->nofz = malloc_err(Nzbin*sizeof(nofz_t), err); forwardError(*err, __LINE__, NULL);
    memcpy(res->nofz, nofz, Nzbin*sizeof(nofz_t));
 
@@ -339,7 +339,7 @@ double *read_par_nz_hist(const char *name, int *Nnz, error **err)
    int i, n, nread;
    double *par_nz, dummy;
    char str[1024];
-   char *dummy2;
+   char *dummy2 = NULL;
    size_t size;
 
    /* Number of lines */
@@ -368,7 +368,8 @@ double *read_par_nz_hist(const char *name, int *Nnz, error **err)
    rewind(F);
 
    /* Header line */
-   fscanf(F, "%*[^\n]\n", NULL);
+   getline(&dummy2, &size, F);
+   free(dummy2);
 
    nread = fscanf(F, "%lg %lg\n", par_nz, par_nz+n+1);           /* z_0  n_0 */
    testErrorRetVA(nread!=2, io_file, "Error while reading n(z) file ('%s'): two doubles expected (first line)",
@@ -640,7 +641,7 @@ double prob_unnorm(double z, void *intpar, sm2_error **err)
       epsabs     = 1.0e-6;
       epsrel     = 1.0e-3;
       w          = gsl_integration_workspace_alloc(n);
-      F.function = &dpn_dz;
+      F.function = &dpn_dz; 
       F.params   = (void*)&params_photz;
 
       status = gsl_integration_qng(&F, get_zmin_ph(self, n_bin), get_zmax_ph(self, n_bin), epsabs, epsrel, &res, &abserr, &neval);
@@ -686,7 +687,7 @@ double gaussian(double z, double mu, double sigma)
 
    res = exp(-0.5 * dsqr((z - mu)/sigma)) / sqrt(twopi) / sigma;
 
-   return res;
+   return res; 
 }
 
 double prob_photz(double z, double zp, photz_t photz, const double *par_pz, error **err)
@@ -873,7 +874,7 @@ double prob(redshift_t *self, double z, int n_bin, error **err)
    zz = z*self->z_rescale[n_bin];
 
    testErrorRet(zz<0, ce_negative, "Negative redshift z", *err, __LINE__ , 0);
-
+		
    rANDi.self = self;
    rANDi.i    = n_bin;
 
@@ -924,7 +925,7 @@ double int_for_zmean(double z, void *intpar, error **err)
 
    res = z*p;
 
-   return res;
+   return res;	
 }
 
 #define EPS 1.0e-5
@@ -960,7 +961,7 @@ double zmean(redshift_t *self, int n_bin, error **err)
    res = sm2_qromberg(int_for_zmean, (void*)&rANDi, zmin, zmax, 1.0e-6, err);
    forwardError(*err, __LINE__, 0);
 
-   return res;
+   return res;	
 }
 
 double zmedian(redshift_t *self, int n_bin, error **err)

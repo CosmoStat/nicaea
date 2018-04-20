@@ -167,7 +167,10 @@ void usage(int ex)
    fprintf(stderr, "  -L 'L_MIN L_MAX NL'    NL Fourier modes between L_MIN and L_MAX (default: '%g %g %d')\n", ELL_MIN, ELL_MAX, NELL);
    fprintf(stderr, "  --linlog MODE          Linear (MODE='LIN') or logarithmic ('LOG'; default) bins for xi+, xi-\n");
    fprintf(stderr, "  -D DIM                 Dimensionless (DIM=1; default) or dimensional (DIM=0) 3D power spectrum\n");
-   fprintf(stderr, "  -H LEVEL               Output file header level: 0 (no header), 1 (one line of column description), 2 (full; default)\n");
+   fprintf(stderr, "  --Omega_m VAL          Use Omega_m=VAL instead of value from cosmo.par\n");
+   fprintf(stderr, "  --sigma_8 VAL          Use sigma_8=VAL instead of value from cosmo.par\n");
+   fprintf(stderr, "  -H LEVEL               Output file header level: 0 (no header), 1 (one line of column\n");
+   fprintf(stderr, "                          description), 2 (full; default)\n");
    fprintf(stderr, "  -q                     Quiet mode\n");
    fprintf(stderr, "  -h                     This message\n");
 
@@ -178,10 +181,10 @@ void usage(int ex)
 int main(int argc, char** argv)
 {
    cosmo_lens* model;
-   double k, logk, ell, theta, a, pk, pg, f, z, cumG, Ga, ww, incr;
-   int i_bin, j_bin, Nzbin, c, dimensionless, verbose, lin, header, iell;
+   double k, ell, theta, a, pk, pg, f, z, cumG, Ga, ww, incr;
+   int i_bin, j_bin, Nzbin, c, dimensionless, verbose, lin, header; //, iell;
    error *myerr = NULL, **err;
-   char *theta_fname, *theta_info, *ell_info, *substr, *slinlog;
+   char *theta_fname, *theta_info, *ell_info, *substr, *slinlog, *sOmega_m, *ssigma_8;
    FILE *F;
    size_t Nrec, Ntheta, Nell;
    double *theta_list, Theta_min, Theta_max, ell_min, ell_max, ell_fac;
@@ -193,6 +196,7 @@ int main(int argc, char** argv)
 
    theta_fname = theta_info = ell_info = NULL;
    slinlog = "LOG";
+   sOmega_m = ssigma_8 = "";
    dimensionless = 1;
    verbose = 1;
    lin = 0;
@@ -206,6 +210,8 @@ int main(int argc, char** argv)
          {"", required_argument, 0, 'D'},
          {"", required_argument, 0, 'H'},
          {"linlog", required_argument, 0, 'l'},
+         {"Omega_m", required_argument, 0, 'O'},
+         {"sigma_8", required_argument, 0, 's'},
          {0, 0, 0, 0}
       };
 
@@ -228,6 +234,12 @@ int main(int argc, char** argv)
          case 'D':
             dimensionless = atoi(optarg);
             break;
+         case 'O':
+            sOmega_m = optarg;
+            break;
+         case 's':
+            ssigma_8 = optarg;
+            break;
          case 'H':
             header = atoi(optarg);
             break;
@@ -246,7 +258,7 @@ int main(int argc, char** argv)
 end_arg:
 
    if (verbose) {
-      printf("# lensingdemo (M. Kilbinger, 2006-2012)\n");
+      printf("# lensingdemo (M. Kilbinger, 2006-2017)\n");
    }
 
    if (dimensionless > 0) {
@@ -263,7 +275,6 @@ end_arg:
    }
 
 
-
    /* Setting up cosmology */
 
    F = fopen_err("cosmo_lens.par", "r", err);
@@ -274,6 +285,16 @@ end_arg:
 
    Nzbin = model->redshift->Nzbin;
 
+   /* On-the-fly (command line) update of parameters */
+#define Nspar 2
+   char *spar[Nspar] = {sOmega_m, ssigma_8};
+   char *sname[Nspar] = {"Omega_m", "sigma_8"};
+   for (c=0; c<Nspar; c++) {
+      if (strlen(spar[c]) != 0) {
+         update_cosmo_lens_par_one(&model, sname[c], atof(spar[c]), err);
+         quitOnError(*err, __LINE__, stderr);
+      }
+   }
 
    if (verbose) {
       printf("# Cosmological parameters:\n");
@@ -362,6 +383,7 @@ end_arg:
    }
 
    /* w_limber2 */
+   /*
    double w0, w0i, w1, w2, w3;
    F = fopen("w_limber2", "w");
    fprintf(F, "# chi wl2(chi) wl2(chi, interp) wl2' wl2'' wl2'''\n");
@@ -371,6 +393,7 @@ end_arg:
       w1 = deriv_w_23(model, ww, 0, &w2, &w3, err);     quitOnError(*err, __LINE__, stderr);
       fprintf(F, "%g  %g %g  %g %g %g\n", ww, w0, w0i, w1, w2, w3);
    }
+   */
 
 
    /* Density power spectrum */
@@ -390,7 +413,6 @@ end_arg:
    F = fopen("P_delta", "w");
    if (header >= 2) {
       dump_param(model->cosmo, F);
-      quitOnError(*err, __LINE__, stderr);
 
       if (dimensionless == 0) { 
          fprintf(F, "# k[h/Mpc] P_NL(k,a)[(Mpc/h)^3]\n");
@@ -422,34 +444,8 @@ end_arg:
 	 }
       }
       fprintf(F, "\n");
-      quitOnError(*err, __LINE__, stderr);
    }
    fclose(F);
-
-   // WL_case_C0
-   F = fopen("pkzero-lin-MK.dat", "w");
-   quitOnError(*err, __LINE__, stderr);
-
-   for (logk=-3; logk<=1.0; logk+=0.01) {
-      k  = pow(10, logk) / model->cosmo->h_100; // k [Mpc^[-1] = k/h [h/Mpc] 
-      pk = P_L(model->cosmo, 1.0, k, err) / pow(model->cosmo->h_100, 3);  // Pk [Mpc^3/h^3] = Pk/h^3
-      quitOnError(*err, __LINE__, stderr);
-      fprintf(F, "%8g %8g\n", logk, log10(pk));
-   }
-   fclose(F);
-
-   // XC_case_C1
-   F = fopen("P_delta_nicaea_XC_1.dat", "w");
-   quitOnError(*err, __LINE__, stderr);
-
-   for (logk=-5; logk<=3.0; logk+=0.01) {
-      k  = pow(10, logk); // / model->cosmo->h_100; // k [Mpc^[-1] = k/h [h/Mpc] 
-      pk = P_L(model->cosmo, 0.5, k, err); // / pow(model->cosmo->h_100, 3);  // Pk [Mpc^3/h^3] = Pk/h^3
-      quitOnError(*err, __LINE__, stderr);
-      fprintf(F, "%8g %8g\n", k, pk);
-   }
-   fclose(F);
-
 
 
    /* Redshift distribution */
@@ -474,6 +470,7 @@ end_arg:
 
    /* Convergence power spectrum */
 
+   /*
    if (verbose) {
       printf("Calculating convergence power spectrum for discrete ell, writing file P_kappa_d\n");
    }
@@ -511,6 +508,7 @@ end_arg:
    }
 
    fclose(F);
+   */
 
    if (model->projection != full) {
 
@@ -793,12 +791,12 @@ end_arg:
    }
    fclose(F);
 
+   free_parameters_lens(&model);
+
 
    if (verbose) {
       printf("Done\n");
    }
-
-   free_parameters_lens(&model);
 
    return 0;
 }
@@ -808,3 +806,4 @@ end_arg:
 #undef ELL_MIN
 #undef ELL_MAX
 #undef NELL
+#undef Nspar

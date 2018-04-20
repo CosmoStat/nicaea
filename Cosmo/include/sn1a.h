@@ -6,9 +6,6 @@
 #ifndef __SN1A_H
 #define __SN1A_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,10 +25,6 @@ extern "C" {
 /* Number of light curve parameters */
 //#define NLCP 3
 #define NLCP 4
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 /* Chi^2 methods */
 typedef enum {chi2_simple, chi2_Theta2_denom_fixed, chi2_no_sc, chi2_betaz, chi2_dust, chi2_residual} chi2mode_t;
@@ -135,9 +128,5 @@ double chi2_SN(const cosmo_SN *cosmo, const SnSample *sn, mvdens *data_beta_d,
 	       int wTheta1, int add_logdetCov, error **err);
 
 double distance_module(cosmo *self, double dlum, error **err);
-
-#ifdef __cplusplus
-}}
-#endif
 
 #endif /* __SN1A_H */
