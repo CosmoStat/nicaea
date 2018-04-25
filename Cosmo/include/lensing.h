@@ -7,10 +7,6 @@
 #ifndef __LENSING_H
 #define __LENSING_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,10 +35,6 @@ extern "C" {
 #include "decomp_eb.h"
 #include "reduced_fit.h"
 
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 /* Dimensions of interpolation tables */
 /* N_s was increased from 200 to 400, for linear tabulation of P_kappa */
@@ -332,6 +324,9 @@ cosmo_lens* set_cosmological_parameters_to_default_lens(error **err);
 void free_parameters_lens(cosmo_lens** self);
 void dump_param_lens(cosmo_lens* self, FILE *F, int wnofz, error **err);
 
+void update_cosmo_lens_par_one(cosmo_lens **self, char spar[], double val, error **err);
+
+
 /* ============================================================ *
  * Lensing functions.						*
  * ============================================================ */
@@ -429,8 +424,6 @@ CHANGE(gamma2);
 CHANGE(map2);
 #undef CHANGE
 
-#ifdef __cplusplus
-}}
-#endif
 
 #endif /* __LENSING_H */
+

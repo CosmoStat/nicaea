@@ -14,14 +14,6 @@
 #define peta 5
 #define rs   6
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
-
 const double ksim[nsim];
 
 const double kemu[1000];
@@ -34,8 +26,7 @@ const double w_coyote[peta][m];
 const double KrigBasis[peta][m];
 
 /* The above defined quantities are undefined at the end of emu.c */
-#ifdef __cplusplus
-}}
-#endif
 
 #endif
+
+

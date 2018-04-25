@@ -1915,32 +1915,32 @@ void tpstat_via_hankel(void* self, double **xi, double *logthetamin, double *log
    switch (tpstat) {
       case tp_xipm :
       case tp_w :
-	 q =  0.0;
-	 mu = 0.0;
-	 norm = 2.0*pi;
-	 break;
+         q =  0.0;
+         mu = 0.0;
+         norm = 2.0*pi;
+         break;
       case tp_gt :
          q =  0.0; 
          mu = 2.0;
          norm = 2.0*pi;
          break;
       case tp_gsqr :
-	 q = -2.0;
-	 mu = 1.0;
-	 norm = 2.0*pi/4.0;
-	 break;
+         q = -2.0;
+         mu = 1.0;
+         norm = 2.0*pi/4.0;
+         break;
       case tp_map2_poly :
-	 q = -4.0; 
-	 mu = 4.0;
-	 norm = 2.0*pi/24.0/24.0;
-	 break;
+         q = -4.0; 
+         mu = 4.0;
+         norm = 2.0*pi/24.0/24.0;
+         break;
       case tp_map2_gauss :
-	 q = mu = 0.0;          /* unused */
-	 norm = 4.0*2.0*pi;
-	 break;
+         q = mu = 0.0;          /* unused */
+         norm = 4.0*2.0*pi;
+         break;
       case tp_xir :
-	 q = mu = 0.0;          /* unused */
-	 norm = 2.0*pi*pi;
+         q = mu = 0.0;          /* unused */
+         norm = 2.0*pi*pi;
 	 break;
       default :
 	 *err = addErrorVA(math_unknown, "Unknown tpstat_t %d", *err, __LINE__, tpstat);
@@ -1953,33 +1953,33 @@ void tpstat_via_hankel(void* self, double **xi, double *logthetamin, double *log
 
       /* Perform the convolution, negative sign for kernel (complex conj.!) */
       for(i=0; i<N_thetaH/2+1; i++) {
-	 kk = 2*pi*i/(dlnl*N_thetaH);
+         kk = 2*pi*i/(dlnl*N_thetaH);
 
-	 switch (tpstat) {
-	    case tp_xipm :
-	    case tp_w :
-	    case tp_gt  :
-	       hankel_kernel_mu(kk, &kernel, q, mu, err);
-	       break;
-	    case tp_gsqr :
-	    case tp_map2_poly :
-	       hankel_kernel_mumu(kk, &kernel, q, mu, err);
-	       break;
-	    case tp_map2_gauss :
-	       hankel_kernel_exp(kk, &kernel, err);
-	       break;
-	    case tp_xir :
-	       hankel_kernel_tophat(kk, &kernel, err);
-	       break;
-	    default :
-	       *err = addErrorVA(math_unknown, "unknown tpstat %d", *err, __LINE__, tpstat);
-	       return;
-	 }
-	 forwardError(*err, __LINE__,);
+         switch (tpstat) {
+            case tp_xipm :
+            case tp_w :
+            case tp_gt  :
+               hankel_kernel_mu(kk, &kernel, q, mu, err);
+               break;
+            case tp_gsqr :
+            case tp_map2_poly :
+               hankel_kernel_mumu(kk, &kernel, q, mu, err);
+               break;
+            case tp_map2_gauss :
+               hankel_kernel_exp(kk, &kernel, err);
+               break;
+            case tp_xir :
+               hankel_kernel_tophat(kk, &kernel, err);
+               break;
+            default :
+               *err = addErrorVA(math_unknown, "unknown tpstat %d", *err, __LINE__, tpstat);
+               return;
+         }
+         forwardError(*err, __LINE__,);
 
-	 /* Re and Im */
-	 conv[i][0] = f_lP[i][0]*kernel[0]-f_lP[i][1]*kernel[1];
-	 conv[i][1] = f_lP[i][1]*kernel[0]+f_lP[i][0]*kernel[1];
+         /* Re and Im */
+         conv[i][0] = f_lP[i][0]*kernel[0]-f_lP[i][1]*kernel[1];
+         conv[i][1] = f_lP[i][1]*kernel[0]+f_lP[i][0]*kernel[1];
       }
 
       /* Force Nyquist- and 0-frequency-components to be double */
@@ -1989,8 +1989,8 @@ void tpstat_via_hankel(void* self, double **xi, double *logthetamin, double *log
       /* Go back to real space, i labels log-bins in theta */
       fftw_execute(plan1);
       for(i=0; i<N_thetaH; i++) {
-	 t = exp((nc-i)*dlnl-lnrc);             /* t = 1/l */
-	 xi[count][N_thetaH-i-1] = lP[i]/(t*N_thetaH*norm);
+         t = exp((nc-i)*dlnl-lnrc);             /* t = 1/l */
+         xi[count][N_thetaH-i-1] = lP[i]/(t*N_thetaH*norm);
       }
    }
 

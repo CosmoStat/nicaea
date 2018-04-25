@@ -6,10 +6,6 @@
 #ifndef __LENSING_3RD_H
 #define __LENSING_3RD_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -50,10 +46,6 @@ extern "C" {
 #define lensing_3rd_wrongmode    -1 + lensing_3rd_base
 #define lensing_3rd_rootbracket  -4 + lensing_3rd_base
 #define lensing_3rd_slc          -5 + lensing_3rd_base
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 typedef enum {fgauss=0, fpoly=1, ftophat=2, fdelta=3, fxip=4, fxim=5, fall=6} filter_t;
 
@@ -229,8 +221,7 @@ void fill_dmm_map3gauss(cosmo_3rd *self, double *data_minus_model, int start, co
 			int Ntheta, double *theta, error **err);
 double chi2_lensing_3rd(cosmo_3rd *self, datcov *dc, const cosebi_info_t *cosebi_info, error **err);
 
-#ifdef __cplusplus
-}}
-#endif
+
 
 #endif
+

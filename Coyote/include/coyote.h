@@ -1,9 +1,8 @@
 #ifndef __COYOTE_H
 #define __COYOTE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
+
 
 #include <stdio.h>
 #include <math.h>
@@ -19,10 +18,6 @@ extern "C" {
 #include "errorlist.h"
 #include "maths.h"
 
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 /* Error codes */
 #define coyote_base -2200
@@ -72,9 +67,5 @@ void fr_emu(const double *xstar, double *ystar, const double *ystar_allz, error 
 void fill_xstar6_wo_z(double omega_m, double omega_b, double n_spec, double sigma_8, double w0_de, double h_100,
                       double xstar[]);
 
-
-#ifdef __cplusplus
-}}
-#endif
 
 #endif

@@ -1,13 +1,63 @@
 :numbered:
 
+######
+nicaea
+######
+
+NumerIcal Cosmology And lEnsing cAlculations
+
+Version 2.7.2 (04/2018)
+
+Web page: https://github.com/CosmoStat/nicaea
+
+********
+Authors:
+********
+
+Martin Kilbinger
+
+Karim Benabed
+
+Jean Coupon (HOD, halomodel)
+
+Henry J. McCracken (HOD)
+
+Liping Fu (decomp_eb)
+
+Catherine Heymans (intrinsic alignment)
+
+Francois Lanusse (enhancements and interface)
+
+Documentation
+=============
+
+nicaea is the cosmology part of cosmo_pmc, which can be downloaded for free at
+http://www.cosmopmc.info. From that site, the cosmo_pmc manual is available for
+further information about nicaea, which are more detailed than covered in this
+readme.
+
+References
+==========
+
+To reference nicaea, please use the publication :cite:`KB09`
+(https://arxiv.org/abs/0810.5129), in which something that resembles the
+first version of nicaea has been used.
+
+
 Download, compile, and run nicaea
 =================================
 
 Download the code
 -----------------
 
-Download the file nicaea_2.7.tgz from http://cosmostat.org/nicaea and un-tar
-the archive. The packages fftw3 and gsl are required to compile and run nicaea.
+Reommended: Clone the most recent stable version from github with::
+
+        git clone https://github.com/CosmoStat/nicaea
+
+Alternatively, download the file ``nicaea_<version>.tgz`` from http://cosmostat.org/nicaea and un-tar
+the archive.
+
+The packages fftw3 and gsl are required to compile and run nicaea.
 You can install fftw3 from http://www.fftw.org, and gsl from
 www.gnu.org/software/gsl.
 
@@ -24,9 +74,9 @@ Option 1: using cmake, *recommended*::
 	make && make install
 
 The last command will copy the executable demo programs (e.g. lensingdemo)
-to <BASE>/bin, the library libnicaea.a to <BASE>/lib, and the include
-files to <BASE>/include/nicaea . The default base directory is
-<BASE>=nicaea_2.7 .
+to ``<BASE>/bin``, the library ``libnicaea.a`` to ``<BASE>/lib``, and the include
+files to ``<BASE>/include/nicaea``. The default base directory is
+``<BASE>=nicaea_<version>``.
 
 If the necessary libraries are found on the system, the python module
 pynicaea is also installed.
@@ -35,26 +85,26 @@ The code can be tested with::
 
 	ctest -vv
 
-To run the demo programs (see below), go to nicaea_2.7/par_files .
+To run the demo programs (see below), go to ``nicaea_<version>/par_files`` .
 
 Option 2: using make.::
 
 	cd Demo
 	make
 
-If fftw3 and gsl are not installed in a standard directory (e.g. /usr,
-/usr/local), set the variables 'FFTW' and 'GSL' in the Makefile. The header
-file fftw3.h is looked for in $(FFTW)/include and libfftw3.a in $(FFTW)/lib.
-The gsl header files are looked for in $(GSL)/include, the libraries libgsl.a
-and libgslcblas.a in $(GSL)/lib.
+If fftw3 and gsl are not installed in a standard directory (e.g. ``/usr``,
+``/usr/local``), set the variables 'FFTW' and 'GSL' in the Makefile. The header
+file ``fftw3.h`` is looked for in ``$(FFTW)/include`` and ``libfftw3.a`` in ``$(FFTW)/lib``.
+The gsl header files are looked for in ``$(GSL)/include``, the libraries ``libgsl.a``
+and ``libgslcblas.a`` in ``$(GSL)/lib``.
 
-Various demo programs can be run in ./Demo, see below.
+Various demo programs can be run in ``./Demo``, see below.
 
 Run the demo programs
 ---------------------
 
 The demo programs need parameter files in the working directory, which can be
-found in par_files.
+found in ``par_files``.
 
 +------------------------+--------------+-----------------------------------------------------------------------+
 | Program name           | Category     | Functionality                                                       	|
@@ -78,45 +128,49 @@ found in par_files.
 Main functions
 ==============
 
-The main functions listed below have as some of their parameters::
+The main functions listed below have as some of their parameters:
 
-   model: cosmo_lens* structure (see Sect. 4)
-	Lensing and cosmological paramaters and pre-computed tables
-   theta, THETA_MIN, THETA_MAX, Psimin, Psimax: double
-	Angular scale [rad]
-   R: double[3]
-        Array of angular scale tripes
-   i_bin, j_bin, k_bin: int
-	Redshift bin indices
-   err: error* (see Sect. 4)
-	Error structure
-   n: integer
-        COSEBIs mode.
-   path: string
-	Path to COSEBIs files with zeros for given Psimin and Psimax. Default
-	is */path/to/nicaea/par_files/COSEBIs/*.
-   B_cosebi: double*
-        On output, B_mode is written to this pointer if non zero.
-   aa: array of doubles
-        Pre-calculated array of coefficients, see decomp_eb.c.
-   N: integer
-        Polynomial order, default 6
-   poly: poly_t enumeration type
-        Polyonmial type, default *cheby2*
-   wfilter: filter_t enumeration
-        Aperture-mass filter type, see lensing_3rd.h, default *fgauss*.
-   a: double
-        Scale factor, max(0.01,1/(1+zmax))<=a<1.0
-   k: double
-        3d Fourier wave-mode in h/Mpc
-   s: double
-        2d Fourier wave-mode, 1e-2<=ell<=1e6
-   ell: integer
-        2D harmonic mode, ell>=2
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| Name                | Type                                | Description                                                                                                    |
++=====================+=====================================+================================================================================================================+
+| model               | cosmo_lens* structure (see Sect. 4) | Lensing and cosmological paramaters and pre-computed tables                                                    |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| theta, THETA_MIN,   | double                              | Angular scale [rad]                                                                                            |
+| THETA_MAX, Psimin,  |                                     |                                                                                                                |
+| Psimax              |                                     |                                                                                                                |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| R                   | double[3]                           | Array of angular scale tripes                                                                                  |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| i_bin, j_bin, k_bin | int                                 | Redshift bin indices                                                                                           |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| err                 | error* (see Sect. 4)                | Error structure                                                                                                |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| n                   | integer                             | COSEBIs mode.                                                                                                  |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| path                | string                              | Path to COSEBIs files with zeros for given Psimin and Psimax. Default is */path/to/nicaea/par_files/COSEBIs/*. |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| B_cosebi            | double*                             | On output, B_mode is written to this pointer if non zero.                                                      |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| aa                  | array of doubles                    | Pre-calculated array of coefficients, see decomp_eb.c.                                                         |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| N                   | integer                             | Polynomial order, default 6                                                                                    |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| poly                | poly_t enumeration type             | Polyonmial type, default *cheby2*                                                                              |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| wfilter             | filter_t enumeration                | Aperture-mass filter type, see lensing_3rd.h, default *fgauss*.                                                |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| a                   | double                              | Scale factor, max(0.01,1/(1+zmax))<=a<1.0                                                                      |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| k                   | double                              | 3d Fourier wave-mode in h/Mpc                                                                                  |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| s                   | double                              | 2d Fourier wave-mode, 1e-2<=ell<=1e6                                                                           |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ell                 | integer                             | 2D harmonic mode, ell>=2                                                                                       |
++---------------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 
 The value of the corresponding two- and three-point function is returned as
-double.
+double. 
 
 Second-order shear statistics
 -----------------------------
@@ -137,7 +191,7 @@ Aperture-mass variance, polynomial filter::
 
 Aperture-mass variance, Gaussian filter::
 
-	map2_gauss(model, theta, i_bin, j_bin, err)
+	map2_gauss(model, theta, i_bin, j_bin, err)	     
 
 COSEBIs (Complete Orthogonal E-/B-mode Integrals), :cite:`COSEBIs`::
 
@@ -153,7 +207,7 @@ Third-order shear statistics
 
 Third-order aperture-mass generalized moment, :cite:`SKL05`::
 
-	map3(model, R, i_bin, i_bin, k_bin, wfilter, err)
+	map3(model, R, i_bin, i_bin, k_bin, wfilter, err)    
 
 
 Power spectra
@@ -161,13 +215,13 @@ Power spectra
 
 3d power spectrum of delta::
 
-	P_NL(model, a, k, err)
+	P_NL(model, a, k, err)		     
 
 2d shear power spectrum: Pshear or Pshear+Pg^(1) if reduced-shear correction is
 switched on with key "sreduced = K10" in cosmo_lens.par parameter file.
 Returns error if sprojection==full::
 
-	Pshear(model, s, i_bin, j_bin, err)
+	Pshear(model, s, i_bin, j_bin, err)  
 
 2d shear power spectrum Pshear for integer ell. Computes full spherical
 projection for sprojection==full (Kilbinger et al. 2017). Calls Pshear for
@@ -178,7 +232,7 @@ other cases of sprojection::
 2d reduced-shear correction power spectrum Pg^(1), see Kilbinger (2010). The
 totel (reduced-shear) power spectrum is Pkappa + Pg1::
 
-	Pg1(model, s, i_bin, j_bin, err)
+	Pg1(model, s, i_bin, j_bin, err)     
 
 Ranges
 ------
@@ -483,7 +537,8 @@ Flags
 |               | camb              | Using camb for T(k) (not yet supported)                                   |
 +---------------+-------------------+---------------------------------------------------------------------------+
 | growth        | heath             | Heath (1977) analytical expression for linear growth factor (valid only   |
-|               |                   | for no or a pure cosmological constant, i.e. w0_de=-1, w1_de=0)           |
+|               |                   | for no or a pure cosmological constant, i.e. w0_de=-1, w1_de=0),          |
+|               |                   | :cite:`hea:77`                                                            |
 +---------------+-------------------+---------------------------------------------------------------------------+
 |               | growth_de         | General dark energy model                                                 |
 +---------------+-------------------+---------------------------------------------------------------------------+
@@ -596,6 +651,7 @@ Universe there is a maximum redshift, and if the redshift distribution extends
 over this maximum, the angular diameter distance is undefined and an error is
 produced.
 
+
 Extrapolation
 =============
 
@@ -616,12 +672,13 @@ called after the first time. The tables are recalculated when
 cosmological parameters have changed since the previous call. The
 correlation functions are calculated using a fast Hankel transform.
 
+
 Known bugs and shortcomings
 ===========================
 
 - Some parameter combinations cause undefined behaviour of the
   program. These are (hopefully) intercepted and an error is created
-  (see Sect. 5). E.g., for n_spec<0.7, f_NL (Peacock&Dodds) is not
+  (see Sect. 5). E.g., for n_spec<0.7, f_NL :cite:`PD96`) is not
   defined. For a closed Universe, the probed redshift can be larger
   than the maximum redshift.
 
@@ -631,7 +688,7 @@ Known bugs and shortcomings
   for the inverse Fisher matrix, numerical derivatives have to be very
   accurate, and the interpolations between tabulated values (linear and
   spline) in nicaea introduce numerical noise that can render the Fisher
-  matrix numerically singular (Wolz et al. 2012).
+  matrix numerically singular :cite`WKWG12`.
 
 - Dark-energy models, in particular with varying w(z), are not recommended
   for the non_linear models smith03, and smith03_de. Instead, use the
@@ -644,10 +701,10 @@ martin.kilbinger@cea.fr . Questions and comments are welcome!
 Changes compared to the Rob Smith's original halofit
 ====================================================
 
-Parts of the program 'cosmo.c' is based on Rob Smiths' halofit (Smith et al.
-2003). The code for determining the non-linear power spectrum has been improved
+Parts of the program 'cosmo.c' is based on Rob Smiths' halofit :cite:`2003MNRAS.341.1311S`.
+The code for determining the non-linear power spectrum has been improved
 and made more efficient. The main changes are listed below. The code also
-includes the non-linear fitting formulae of Peacock & Dodds (1996).
+includes the non-linear fitting formulae of :cite:`PD96`.
 
 - Tabulation of the linear and non-linear power spectrum, constants
   are calculated only once.
@@ -660,12 +717,18 @@ includes the non-linear fitting formulae of Peacock & Dodds (1996).
   10^6 h/Mpc), the bisection is canceled and the linear power spectrum
   is used.
 - Slope and curvature are calculated only once, after knl is fixed.
-- The Eisenstein&Hu (1998) fit for the transfer function is used
+- The Eisenstein & Hu (1998) :cite:`1998ApJ...496..605E` fit for the transfer function is used
   instead of Bond&Efstathiou (1984).
-- The exact linear growth factor is used instead of the CPT92 fitting
+- The exact linear growth factor is used instead of the :cite:`CPT:92` fitting
   formula. Dark energy models are incorporated.
 
 
+Acknowledgements
+================
+
+We thank Alexandre Boucaud, Jan Hartlap, Alina Kiessling, Jasmin Pielorz, Peter
+Schneider, Rob E. Smith, Patrick Simon, Masahiro Takada, Melody Wolk, and the
+CosmoSIS development team for helpful suggestions.
 
 References
 ==========
@@ -674,3 +737,14 @@ References
    :cited:
    :style: mystyle
    :encoding: utf
+
+
+
+Contact
+=======
+
+Feel free to email me at martin.kilbinger@cea.fr
+
+Have fun!
+   Martin Kilbinger
+

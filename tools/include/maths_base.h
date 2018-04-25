@@ -10,10 +10,6 @@
 #ifndef __MATHS_BASE_H
 #define __MATHS_BASE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -47,10 +43,6 @@ extern "C" {
 #define math_overflow	        -12 + math_base
 #define math_unknown            -13 + math_base
 
-#ifdef __cplusplus
-namespace nicaea {
-#endif
-
 
 typedef double my_complex[2];
 
@@ -80,8 +72,6 @@ typedef double my_complex[2];
 /* Scalar product (x,y) */
 #define SP(x,y) ((x)[0]*(y)[0]+(x)[1]*(y)[1])
 
-#ifdef __cplusplus
-}}
-#endif
 
 #endif
+

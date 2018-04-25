@@ -6,9 +6,11 @@
 #ifndef __MATHS_H
 #define __MATHS_H
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 #ifndef _NOFFTW_
 #include <fftw3.h>
@@ -24,19 +26,21 @@ extern "C" {
 #include "io.h"
 #endif
 
-#define NR_END 1
-#define FREE_ARG char*
 
 #ifdef __cplusplus
 namespace nicaea {
 #endif
+
+
+#define NR_END 1
+#define FREE_ARG char*
 
 /* See cosmo.h */
 typedef enum {comp_c=0, comp_b=1, comp_nu=2} comp_t;
 #define NCOMP 3
 
 /* The following scales are Used for Hankel transforms */
-#define theta_min 3.0e-7
+#define theta_min 3.0e-7 
 #define theta_max 0.12
 
 #define l_min     0.0001
@@ -158,7 +162,7 @@ double sm2_qromberg(funcwithpars, double *intpar,
                     double a, double b, double EPS, error **err);
 double sm2_qrombergo(funcwithpars  func, void *intpar,
                      double a, double b,
-                     double (*choose)(double(*)(double,void *,error**), void *, double, double,
+                     double (*choose)(double(*)(double,void *,error**), void *, double, double, 
 				      int, double *,error**), double EPS,error **err);
 double sm2_midpntberg(funcwithpars func, void *intpar,
                       double a, double b, int n, double *s,error **err);
@@ -201,7 +205,7 @@ interTable2D* init_interTable2D(int n1, double a1, double b1, double dx1, int n2
 interTable2D* copy_interTable2D(interTable2D* self, error **err);
 void del_interTable2D(interTable2D** self);
 
-interTable2D** init_interTable2D_arr(int N, int n1, double a1, double b1, double dx1, int n2, double a2, double b2,
+interTable2D** init_interTable2D_arr(int N, int n1, double a1, double b1, double dx1, int n2, double a2, double b2, 
 				     double dx2, double lower, double upper, error **err);
 interTable2D** copy_interTable2D_arr(interTable2D **self, int N, error **err);
 void del_interTable2D_arr(interTable2D*** self, int N);
@@ -241,5 +245,6 @@ void hankel_kernel_tophat(double k, fftw_complex *res, error **err);
 #ifdef __cplusplus
 }}
 #endif
+
 
 #endif

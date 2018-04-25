@@ -6,10 +6,6 @@
 #ifndef __HALOMODEL_H
 #define __HALOMODEL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -27,10 +23,6 @@ extern "C" {
 
 #include "cosmo.h"
 #include "nofz.h"
-
-#ifdef __cplusplus
-namespace nicaea {
-#endif
 
 #define hm_base     -1900
 #define hm_hodtype   hm_base + 1
@@ -329,8 +321,6 @@ CHANGE(Pth);
 
 #undef CHANGE
 
-#ifdef __cplusplus
-}}
-#endif
 
 #endif
+
