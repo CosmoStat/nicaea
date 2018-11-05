@@ -124,6 +124,28 @@ found in ``par_files``.
 | third_order_demo	 | Weak lensing | Third-order aperture-mass moments					|
 +------------------------+--------------+-----------------------------------------------------------------------+
 
+cosebi_demo
+^^^^^^^^^^^
+
+This program computes the COSEBI modes :cite:`2010A&A...510A...7E` (https://arxiv.org/abs/0907.2320). The computation
+is either using the theoretical model (with parameters given in ``cosmo.par``). Or, if the option ``-d XI``) is given,
+the COSEBIs are computed by integrating over the shear correlation functions given in the file ``XI``.  This file
+is in ``xipm``-format. To create this, you can first run
+
+        lensingdemo
+
+to create the files ``xi_p`` and ``xi_m``, containing the two correlation functions.
+Next, call
+
+        xip_xim2xi.pl xi_p xi_m
+
+to create a single file ``xi_i_j`` (for each redshift bin combination (i, j)) with the correlation functions in different columns.
+Finally, concatenate those colunmns into one large data vector combining both correlation functions, with
+
+        xi2xipm.pl xi_i_j
+
+The resulting file ``xi_i_j.pm`` is now in ``xipm``-format and can be read by ``cosebis_demo``.
+
 
 Main functions
 ==============
@@ -746,5 +768,4 @@ Contact
 Feel free to email me at martin.kilbinger@cea.fr
 
 Have fun!
-   Martin Kilbinger
-
+   Martin Kilbinge
