@@ -30,7 +30,7 @@ Download, compile, and run nicaea
 Download the code
 -----------------
 
-Download the file nicaea_2.7.tgz from http://cosmostat.org/nicaea and un-tar
+Download the file `nicaea_2.7.tgz` from http://cosmostat.org/nicaea and un-tar
 the archive. The packages fftw3 and gsl are required to compile and run nicaea.
 You can install fftw3 from http://www.fftw.org, and gsl from
 www.gnu.org/software/gsl.
@@ -40,20 +40,20 @@ Compile and install the code
 
 Compiling using `cmake`, *recommended* :
 ```sh
-$ cd build
-$ cmake ..
-$ make && make install
+cd build
+cmake ..
+make && make install
 ```
 The last command will copy the executable demo programs (e.g. lensingdemo)
-to <BASE>/bin, the library libnicaea.a to <BASE>/lib, and the include
-files to <BASE>/include/nicaea . The default base directory is
-<BASE>=nicaea_2.7 .
+to `BASE`/bin, the library libnicaea.a to `BASE`/lib, and the include
+files to `BASE`/include/nicaea . The default base directory is
+`BASE`=nicaea_2.7 .
 
 If the necessary libraries are found on the system, the python module
 pynicaea is also installed.
 
 The code can be tested with::
 ```sh
-$ ctest -vv
+ctest -vv
 ```
-To run the demo programs, go to nicaea_2.7/par_files .
+To run the demo programs, go to `nicaea_2.7/par_files`.
