@@ -30,7 +30,7 @@ Web page: http://cosmostat.org/nicaea
 
 ### Version
 
-2.7
+2.7.3
 
 ### Download, compile, and run nicaea
 
