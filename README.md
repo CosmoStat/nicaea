@@ -42,24 +42,28 @@ Clone the code from the github repository,
 git clone https://github.com/CosmoStat/nicaea
 ```
 
-A new directory `nicaea` is created automatically. Change into its build directory, and configure the code as follows:
+A new directory `nicaea` is created automatically. Create a build directory, and configure the code as follows.
+You can specify the installation path with the option to cmake `-DCMAKE_INSTALL_PREFIX=PATH`.
 
 ```bash
-cd nicaea/build
-cmake ..
+cd nicaea
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=PATH
 ```
 
-On success, compile and install the code:
+On success, compile install the code:
 
 ```bash
 make
-make install
+[sudo] make install
 ```
 
 The last command will copy the executable demo programs (e.g. lensingdemo)
-to `BASE`/bin, the library libnicaea.a to `BASE`/lib, and the include
-files to `BASE`/include/nicaea . The default base directory is
-`BASE`=nicaea_2.7 .
+to `PATH`/bin, the library libnicaea.a to `PATH`/lib, and the include
+files to `PATH`/include/nicaea . If you did not specify the option `-DCMAKE_INSTALL_PREFIX=PATH` above, the default
+location is used, in which case you might need to prepend `sudo` to the `make` command,
+to get write access to the system-wide installation directory.
 
 If the necessary libraries are found on the system, the python module
 pynicaea is also installed.
