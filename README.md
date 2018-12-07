@@ -8,6 +8,8 @@ Documentation: http://nicaea.readthedocs.io
 
 Web page: http://cosmostat.org/nicaea
 
+## Information
+
 ### Authors:
 
   - Martin Kilbinger
@@ -24,26 +26,36 @@ Web page: http://cosmostat.org/nicaea
 
   - Catherine Heymans (intrinsic alignment)
 
-Download, compile, and run nicaea
-=================================
+  - Francois Lanusse (github, python support)
 
-Download the code
------------------
+### Version
 
-Download the file `nicaea_2.7.tgz` from http://cosmostat.org/nicaea and un-tar
-the archive. The packages fftw3 and gsl are required to compile and run nicaea.
-You can install fftw3 from http://www.fftw.org, and gsl from
-www.gnu.org/software/gsl.
+2.7
 
-Compile and install the code
-----------------------------
+### Download, compile, and run nicaea
 
-Compiling using `cmake`, *recommended* :
-```sh
-cd build
-cmake ..
-make && make install
+#### Download the code
+
+Clone the code from the github repository,
+
+```bash
+git clone https://github.com/CosmoStat/nicaea
 ```
+
+A new directory `nicaea` is created automatically. Change into its build directory, and configure the code as follows:
+
+```bash
+cd nicaea/build
+cmake ..
+```
+
+On success, compile and install the code:
+
+```bash
+make
+make install
+```
+
 The last command will copy the executable demo programs (e.g. lensingdemo)
 to `BASE`/bin, the library libnicaea.a to `BASE`/lib, and the include
 files to `BASE`/include/nicaea . The default base directory is
@@ -57,3 +69,4 @@ The code can be tested with::
 ctest -vv
 ```
 To run the demo programs, go to `nicaea_2.7/par_files`.
+
