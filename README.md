@@ -43,13 +43,13 @@ git clone https://github.com/CosmoStat/nicaea
 ```
 
 A new directory `nicaea` is created automatically. Create a build directory, and configure the code as follows.
-You can specify the installation path with the option to cmake `-DCMAKE_INSTALL_PREFIX=PATH`.
+You can specify the installation path with the option to cmake `-DCMAKE_INSTALL_PREFIX=<PATH>`.
 
 ```bash
 cd nicaea
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=PATH
+cmake .. -DCMAKE_INSTALL_PREFIX=<PATH>
 ```
 
 On success, compile install the code:
