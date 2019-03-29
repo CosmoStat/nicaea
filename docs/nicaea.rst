@@ -6,7 +6,7 @@ nicaea
 
 NumerIcal Cosmology And lEnsing cAlculations
 
-Version 2.7.2 (04/2018)
+Version 2.7.3 (12/2018)
 
 Web page: https://github.com/CosmoStat/nicaea
 
