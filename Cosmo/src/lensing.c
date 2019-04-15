@@ -2976,8 +2976,8 @@ double lensing_signal(cosmo_lens *model, double theta, int i_bin, int j_bin, len
 
 /* ============================================================ *
  * Lensing log-likelihood function, for second-order real-space *
- * functions.							*
- * Returns chi^2 = -2 log L					*
+ * functions.							                               *
+ * Returns -0.5 * chi^2 = log L				                      *
  * ============================================================ */
 #define NPERBIN 20
 double chi2_lensing(cosmo_lens* csm, datcov* dc, int return_model, double **model_array, int *Nmodel,
