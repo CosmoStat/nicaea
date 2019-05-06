@@ -800,7 +800,7 @@ double int_for_p_2(double a, void *intpar, error **err)
    gg = gi * gj;
    if (fabs(gg) < EPSILON1) return 0.0;
 
-   /* dw = da/a^2 c/H_0 H_0/h(a)     *
+   /* dw = da/a^2 c/H_0 H_0/H(a)     *
     *    = da/a^2 R_HUBBLE / hoverh0 */
    res  = gg/(asqr*asqr)/hoverh0*R_HUBBLE;
    res *= P_NL_tot(self, a, f, err);             forwardError(*err,__LINE__, -1.0);
