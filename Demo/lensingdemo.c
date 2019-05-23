@@ -204,7 +204,10 @@ int main(int argc, char** argv)
    lin = 0;
    header = 2;
    calc_P_delta = calc_n_of_z = calc_P_kappa_d = calc_P_kappa_c = calc_xi_pm = calc_gamma2 = calc_map2 = 0;
-   calc_P_kappa_c = 1;
+
+	/* TODO: Add command line flags */
+   calc_P_kappa_c = calc_xi_pm = calc_map2 = 1;
+
    out_suf = NULL;
    while (1) {
 
