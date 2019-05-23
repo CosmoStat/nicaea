@@ -83,6 +83,8 @@ target_link_libraries(sn1ademo nicaea)
 add_executable(third_order_demo Demo/third_order_demo.c)
 target_link_libraries(third_order_demo nicaea)
 
+add_executable(getHODModel Demo/getHODModel.c)
+target_link_libraries(getHODModel nicaea)
 
 #
 # Install (by default in the project directory)
