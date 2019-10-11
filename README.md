@@ -74,3 +74,6 @@ ctest -vv
 ```
 To run the demo programs, go to `nicaea_2.7/par_files`.
 
+## Reference
+
+To reference nicaea, please use Kilbinger, Benabed et al. (2009), A&A, 497, 677 (https://arxiv.org/abs/0810.5129), in which something that resembles the first version of nicaea has been used.
