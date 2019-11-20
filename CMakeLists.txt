@@ -13,8 +13,15 @@ cmake_policy(SET CMP0042 NEW)
 # Loading dependencies
 #
 pkg_check_modules(PKGS REQUIRED fftw3 gsl)
-include_directories(${PKGS_INCLUDE_DIRS})
-link_directories(${PKGS_LIBRARY_DIRS})
+
+# non-venv version, look for packages, somehow did not
+# work in venv.
+#include_directories(${PKGS_INCLUDE_DIRS})
+#link_directories(${PKGS_LIBRARY_DIRS})
+
+# venv version, use conda prefix for packages
+include_directories(${CMAKE_INSTALL_PREFIX}/include)
+link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 
 
 #
