@@ -12,6 +12,7 @@ cmake_policy(SET CMP0042 NEW)
 #
 # Loading dependencies
 #
+
 pkg_check_modules(PKGS REQUIRED fftw3 gsl)
 
 # non-venv version, look for packages, somehow did not
