@@ -939,15 +939,13 @@ double Tsqr_one(cosmo *self, double k, double a, double Gamma_eff, error **err)
 			q = k * dsqr(T_CMB/2.7)/Gamma_eff;
 
 			/* EH98 (29) */
-			if (fabs(self->Omega_nu_mass)<EPSILON))
-			{
+			if (fabs(self->Omega_nu_mass)<EPSILON) {
 				L = log(2.*2.71828 + 1.8*q);
 				C = 14.2 + 731.0/(1.0 + 62.5*q);
 
 				res = dsqr(L/(L + C*q*q));
-			}
-			else /* EH99 (6) - (24) */
-			{
+			} else {
+				/* EH99 (6) - (24) */
 				double f_nu = self->Omega_nu_mass / self->Omega_m;
 				double f_b = self->Omega_b / self->Omega_m;
 				double f_nub = f_nu + f_b;
