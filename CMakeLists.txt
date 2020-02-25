@@ -45,7 +45,7 @@ if (NOT PYTHON_LIBRARIES)
 endif()
 find_package(Boost 1.45.0 COMPONENTS python)
 if (NOT Boost_LIBRARIES)
-	message("-- Boost not found, cannot install pynicaea")
+	message("-- Boost not found, cannot install pynicaea, continuing...")
 endif()
 if (PYTHON_LIBRARIES AND Boost_LIBRARIES)
 	message("-- Adding pynicaea to targets")
@@ -83,11 +83,15 @@ target_link_libraries(sn1ademo nicaea)
 add_executable(third_order_demo Demo/third_order_demo.c)
 target_link_libraries(third_order_demo nicaea)
 
+add_executable(getHODModel Demo/getHODModel.c)
+target_link_libraries(getHODModel nicaea)
 
-#
-# Install (by default in the project directory)
+### Installation (by default in the project directory)
 #
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+
+# MKDEBUG: Testing on travis
+#set(CMAKE_INSTALL_PREFIX ".")
 
 # Install nicaea library
 INSTALL(TARGETS nicaea DESTINATION lib)
