@@ -318,7 +318,8 @@ cosmo_hm *set_cosmological_parameters_to_default_hm(error **err)
          0.0, 10.0,			     
          smith03, eisenhu, growth_de, linder, norm_s8,
          9.0, 1.5, 0.13, st2, halo_bias_sc, 11.0, 12.0, 11.0, 0.3, 0.75, 
-         1.0e11, 0.5, 0.6, 1.5, 1.5, 10.62, -0.13, 0.9, 10.0, -1, 1.0, 0.15, 0.5, hamana04, 60.0, err);
+         11.0, 0.5, 0.6, 1.5, 1.5, 10.62, -0.13, 0.9, 10.0, -1, 1.0, 0.15, 0.5, hamana04, 60.0, err);
+   /* MKDEBUG 04/12/2017: fixed 1e11 -> 11 for log10Mstar0 */
 }
 #undef NZBIN
 #undef NNZ

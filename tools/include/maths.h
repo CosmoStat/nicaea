@@ -40,7 +40,7 @@ typedef enum {comp_c=0, comp_b=1, comp_nu=2} comp_t;
 #define NCOMP 3
 
 /* The following scales are Used for Hankel transforms */
-#define theta_min 3.0e-7
+#define theta_min 3.0e-7 
 #define theta_max 0.12
 
 #define l_min     0.0001

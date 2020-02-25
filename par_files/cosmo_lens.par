@@ -26,7 +26,7 @@ stomo		tomo_auto_only
 #  limber2_la08_hyb     2nd-order extended Limber, flat sky, hybrid             [ExtL2FlHyb]
 #  limber2_la08_sph     2nd-order Limber (LA08) with spherical prefactor 	[ExtL2Sph]
 #  full                 Full projection						[Full]
-sprojection	limber2_la08_sph
+sprojection	limber2_la08_hyb
 
 # Reduced-shear correction
 #  none			No correction
