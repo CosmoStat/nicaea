@@ -453,7 +453,7 @@ void set_norm(cosmo* self, error **err)
    } else if (self->normmode==norm_as) {
       self->As      = self->normalization;
       s8            = sigma_8_sqr_norm(self, err);   forwardError(*err, __LINE__,);
-   /   self->sigma_8 = sqrt(s8); 
+      self->sigma_8 = sqrt(s8); 
    } else {
       *err = addError(ce_unknown, "unknown normmode", *err, __LINE__);
    }
