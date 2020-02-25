@@ -324,6 +324,9 @@ cosmo_lens* set_cosmological_parameters_to_default_lens(error **err);
 void free_parameters_lens(cosmo_lens** self);
 void dump_param_lens(cosmo_lens* self, FILE *F, int wnofz, error **err);
 
+void update_cosmo_lens_par_one(cosmo_lens **self, char spar[], double val, error **err);
+
+
 /* ============================================================ *
  * Lensing functions.						*
  * ============================================================ */
