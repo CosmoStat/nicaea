@@ -1355,6 +1355,7 @@ double map3(cosmo_3rd *self, double R[3], int i_bin, int j_bin, int k_bin, filte
    int i;
 
    GGI = GII = III = 0.0;
+   SLC = 0.0;
 
    if (fabs(R[0]-R[1])<eps && fabs(R[1]-R[2])<eps) {
 
@@ -1366,35 +1367,34 @@ double map3(cosmo_3rd *self, double R[3], int i_bin, int j_bin, int k_bin, filte
       GGI = GII = III = 0.0;
       switch (self->ia) {
 
-	 case ia_3rd_S08 :
-	    if (self->ia_terms == ia_GGI_GII_III || self->ia_terms == ia_only_GGI) {
-	       GGI = map3_GGI(self, R[0], err);
-	       forwardError(*err,__LINE__,0.0);
-	    }
-	    if (self->ia_terms == ia_GGI_GII_III || self->ia_terms == ia_only_GII) {
-	       GII = map3_GII(self, R[0], err);
-	       forwardError(*err,__LINE__,0.0);
-	    }
-	    break;
+         case ia_3rd_S08 :
+            if (self->ia_terms == ia_GGI_GII_III || self->ia_terms == ia_only_GGI) {
+               GGI = map3_GGI(self, R[0], err);
+               forwardError(*err,__LINE__,0.0);
+            }
+            if (self->ia_terms == ia_GGI_GII_III || self->ia_terms == ia_only_GII) {
+               GII = map3_GII(self, R[0], err);
+               forwardError(*err,__LINE__,0.0);
+            }
+            break;
 
-	 default :
-	    break;
+         default :
+            break;
       }
 
       /* Source-lens clustering */
-      SLC = 0.0;
       switch (self->slc) {
 
-	 case slc_FK13 :
-	    testErrorRet(i_bin != j_bin || j_bin != k_bin, lensing_tomoij,
-			 "SLC (mode 'slc_FK13') not implemented for tomography",
-			 *err, __LINE__, 0.0);
-	    SLC = map3_SLC_t1(self, R[0], i_bin, err);
-	    forwardError(*err,__LINE__,0.0);
-	    break;
+         case slc_FK13 :
+            testErrorRet(i_bin != j_bin || j_bin != k_bin, lensing_tomoij,
+                  "SLC (mode 'slc_FK13') not implemented for tomography",
+                  *err, __LINE__, 0.0);
+            SLC = map3_SLC_t1(self, R[0], i_bin, err);
+            forwardError(*err,__LINE__,0.0);
+            break;
 
-	 default :
-	    break;
+         default :
+            break;
 
       }
 
@@ -1403,18 +1403,18 @@ double map3(cosmo_3rd *self, double R[3], int i_bin, int j_bin, int k_bin, filte
       /* General skewness, sum up three permutations */
       for (i=0; i<3; i++) myR[i] = R[i];
       for (i=0,m3=0.0; i<3; i++) {
-	 m3 += map3_perm(self, myR, i_bin, j_bin, k_bin, wfilter, err);
-	 forwardError(*err,__LINE__,0);
-	 permute3(myR, 0);
+         m3 += map3_perm(self, myR, i_bin, j_bin, k_bin, wfilter, err);
+         forwardError(*err,__LINE__,0);
+         permute3(myR, 0);
       }
 
       testErrorRet(self->ia != ia_3rd_undef, lensing_ia,
-		   "Intrinsic aligment for general skewness not yet known", 
-		   *err, __LINE__, 0.0);
+            "Intrinsic aligment for general skewness not yet known", 
+            *err, __LINE__, 0.0);
 
       testErrorRet(self->slc != slc_none, lensing_3rd_slc,
-		   "Intrinsic aligment for general skewness not yet known", 
-		   *err, __LINE__, 0.0);
+            "Intrinsic aligment for general skewness not yet known", 
+            *err, __LINE__, 0.0);
 
    }
 
