@@ -326,7 +326,6 @@ void dump_param_lens(cosmo_lens* self, FILE *F, int wnofz, error **err);
 
 void update_cosmo_lens_par_one(cosmo_lens **self, char spar[], double val, error **err);
 
-
 /* ============================================================ *
  * Lensing functions.						*
  * ============================================================ */

@@ -264,6 +264,7 @@ double f_de(cosmo*, double a, error **err);
 double Esqr(cosmo*, double a, int wOmegar, error **err);
 double Omega_m_a(cosmo*,double a, double Esqrpre, error **err);
 double Omega_de_a(cosmo*,double a, double Esqrpre, error **err);
+double Omega_nu_a(cosmo*,double a, double Esqrpre, error **err);
 void Omega_a(cosmo*,double a, double *omega_m, double *omega_v);
 double w_nu_mass(cosmo *self, double a);
 
@@ -295,9 +296,11 @@ double k_silk(const cosmo *model);
 double ratio_b_gamma(cosmo *self, double a);
 double z_drag(cosmo *self);
 double G_EH98(double y);
+double Bpf(double fff);
+double growthk0(cosmo* self, double a);
 double T_tilde(const cosmo *self, double k, double alpha_c, double beta_c);
-double Tsqr_one(cosmo*,double k,double Gamma_eff,error **err);
-double Tsqr(cosmo*,double k,error **err);
+double Tsqr_one(cosmo *self, double k, double a, double Gamma_eff, error **err);
+double Tsqr(cosmo* self, double a, double k, error **err);
 
 /* Linear power spectrum */
 double W_tophat(double x);
@@ -323,7 +326,8 @@ void wint2(cosmo*,double r,double *sig,double *d1,double *d2, double a, int only
 	   error **err, double precision);
 double slope_NL(double rn, double rncur, double om_m, double om_v);
 void halofit(double rk, double rn, double rncur, double rknl, double plin,
-	     double om_m, double om_v, double *pnl, nonlinear_t nonlinear, double aa, cosmo *self, error **err);
+	     double om_m, double om_v, double om_nu, double *pnl, nonlinear_t nonlinear,
+	     double aa, cosmo *self, error **err);
 double dlog(double x);
 double P_NL(cosmo *self, double a, double k, error **err);
 double P_NL_fitting(cosmo*, double a, double k, error **err);

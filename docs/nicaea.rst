@@ -760,8 +760,6 @@ References
    :style: mystyle
    :encoding: utf
 
-
-
 Contact
 =======
 
