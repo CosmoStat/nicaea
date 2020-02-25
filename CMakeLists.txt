@@ -56,7 +56,13 @@ target_link_libraries(sn1ademo nicaea)
 add_executable(third_order_demo Demo/third_order_demo.c)
 target_link_libraries(third_order_demo nicaea)
 
-### Installation
+add_executable(getHODModel Demo/getHODModel.c)
+target_link_libraries(getHODModel nicaea)
+
+### Installation (by default in the project directory)
+
+# MKDEBUG: Testing on travis
+set(CMAKE_INSTALL_PREFIX ".")
 
 # Install the nicaea library
 INSTALL(TARGETS nicaea DESTINATION lib)
