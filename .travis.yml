@@ -15,7 +15,7 @@ install:
 
 script:
     - mkdir build && cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=. ..
+    - cmake ..
     - make
     - make install
     - ctest -vv

@@ -62,7 +62,7 @@ target_link_libraries(getHODModel nicaea)
 ### Installation (by default in the project directory)
 
 # MKDEBUG: Testing on travis
-set(CMAKE_INSTALL_PREFIX ".")
+#set(CMAKE_INSTALL_PREFIX ".")
 
 # Install the nicaea library
 INSTALL(TARGETS nicaea DESTINATION lib)
@@ -78,5 +78,6 @@ INSTALL(TARGETS lensingdemo cmb_bao_demo decomp_eb_demo halomodeldemo sn1ademo c
 
 enable_testing()
 message("-- Creating test module lensingdemo")
-add_test(NAME lensingdemo COMMAND ${CMAKE_INSTALL_PREFIX}/bin/lensingdemo WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/par_files)
+#add_test(NAME lensingdemo COMMAND ${CMAKE_INSTALL_PREFIX}/bin/lensingdemo WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/par_files)
+add_test(NAME lensingdemo COMMAND ${CMAKE_INSTALL_PREFIX}/bin/lensingdemo -h)
 add_test(NAME cmb_bao_demo COMMAND ${CMAKE_INSTALL_PREFIX}/bin/cmb_bao_demo WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/par_files)
