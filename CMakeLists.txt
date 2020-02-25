@@ -88,7 +88,7 @@ target_link_libraries(getHODModel nicaea)
 
 ### Installation (by default in the project directory)
 #
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+#set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # MKDEBUG: Testing on travis
 #set(CMAKE_INSTALL_PREFIX ".")
