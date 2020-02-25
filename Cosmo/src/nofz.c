@@ -339,7 +339,7 @@ double *read_par_nz_hist(const char *name, int *Nnz, error **err)
    int i, n, nread;
    double *par_nz, dummy;
    char str[1024];
-   char *dummy2;
+   char *dummy2 = NULL;
    size_t size;
 
    /* Number of lines */
@@ -368,7 +368,8 @@ double *read_par_nz_hist(const char *name, int *Nnz, error **err)
    rewind(F);
 
    /* Header line */
-   // fgetln(F, &size);
+   getline(&dummy2, &size, F);
+   free(dummy2);
 
    nread = fscanf(F, "%lg %lg\n", par_nz, par_nz+n+1);           /* z_0  n_0 */
    testErrorRetVA(nread!=2, io_file, "Error while reading n(z) file ('%s'): two doubles expected (first line)",
@@ -1009,5 +1010,3 @@ int get_and_check_Nzbin(int Nzcorr, int Nzbin, error **err)
 
    return n;
 }
-
-// fgetln
