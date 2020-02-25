@@ -557,8 +557,8 @@ double chi2_RB_null(const double *RB, const double *covRB, int NRB)
 
 /* ============================================================ *
  * Reads COSEBIs zeros and normalisation coefficients from file *
- * and returns polynomial coefficients. File name is automatic, *
- * scale checks are done.					                         *
+ * and returns polynomial coefficients.	File name is automatic, *
+ * scale checks are done.					*
  * ============================================================ */
 double *read_zeros_norm_cosebi_auto_check(double Psimin, double Psimax, const char *path, error **err)
 {
@@ -614,6 +614,9 @@ double *read_zeros_norm_cosebi(const char *rname, double *psimin, double *psimax
     * sum_{i=1}^{nmax+1} (i+1) = sum_{i=0}^{nmax+1} i - 1 */
    Nzeros = (nmax+1) * (nmax+2) / 2 - 1;
 
+   //fprintf(stderr, "nmax = %d , Psi = [%g, %g]\n", nmax, *psimin, *psimax);
+   //fprintf(stderr, "Reading %d Rn, %d Norm, from %s\n", Nzeros, nmax, rname);
+
    Rn   = malloc_err(sizeof(double)*Nzeros, err);   forwardError(*err, __LINE__, NULL);
    Norm = malloc_err(sizeof(double)*nmax, err);     forwardError(*err, __LINE__, NULL);
 
@@ -658,8 +661,8 @@ double *read_zeros_norm_cosebi(const char *rname, double *psimin, double *psimax
 /* ============================================================ *
  * COSEBI logarithmis filter function, SEK10 (28). The          *
  * coefficients have to be precalculated from the zeros, output *
- * by Mathematica.						                            *
- * Not normalised. 						                            *
+ * by Mathematica.						*
+ * Not normalised. 						*
  * ============================================================ */
 double Tplog_c(double z, const double *c, int n, error **err)
 {
@@ -693,7 +696,7 @@ double Tmlog(double z, const double *c, int n, error **err)
    cn    = c + off_c;
 
    for (m=0,res=0.0,zpowerm=1; m<=n; m++) { // n+1 MKDEBUG ??
-      res += dnm(n, m, cn) * zpowerm;
+      res += dnm(n, m ,cn) * zpowerm;
       zpowerm *= z;
    }
 
@@ -776,6 +779,7 @@ double sum_combinations(int j, int n, const double *r, error **err)
          //printf(" %zu", c_i);
       }
       sum += prod;
+      //printf("{"); gsl_combination_fprintf(stdout, c, " %u"); printf (" }\n");
    } while (gsl_combination_next(c) == GSL_SUCCESS);
 
    gsl_combination_free(c);

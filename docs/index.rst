@@ -3,15 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-nicaea documentation
-====================
+nicaea v2.7 documentation
+=========================
 
 Contents:
 
 .. toctree::
    :maxdepth: 4
 
-   nicaea
+   nicaea_2.7
 
 
 Indices and tables

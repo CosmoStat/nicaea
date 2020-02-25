@@ -2467,7 +2467,7 @@ Nz_hist *get_nz(redshift_t *nz_mk, int n_bin, error **err)
 		 *err, __LINE__, NULL, n_bin, nz_mk->Nzbin-1);
 
   testErrorRetVA(nz_mk->nofz[n_bin] != hist, redshift_type,
-		 "Invalid redshift type nofz='%s'(%d), has to be '(%s)'(%d)' for HOD",
+		 "Invalid redshift type nofz='%s'(%d), hase to be '(%s)'(%d)' for HOD",
 		 *err, __LINE__, NULL, snofz_t(nz_mk->nofz[n_bin]), nz_mk->nofz[n_bin], snofz_t(hist), hist);
 
   int i;

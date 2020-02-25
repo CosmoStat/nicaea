@@ -206,6 +206,7 @@ void read_cosmological_parameters_lens(cosmo_lens **self, FILE *F, error **err)
    tmp = set_cosmological_parameters_to_default_lens(err);
    forwardError(*err, __LINE__,);
 
+
    /* Cosmological parameters */
    CONFIG_READ_S(&tmp2, cosmo_file, s, F, c, err);
    if (strcmp(tmp2.cosmo_file, "-")!=0) {
@@ -218,6 +219,7 @@ void read_cosmological_parameters_lens(cosmo_lens **self, FILE *F, error **err)
    forwardError(*err, __LINE__,);
    if (strcmp(tmp2.cosmo_file, "-")!=0) fclose(FD);
 
+
    /* Redshift parameters */
    CONFIG_READ_S(&tmp2, nofz_file, s, F, c, err);
    if (strcmp(tmp2.nofz_file, "-")!=0) {
@@ -229,6 +231,7 @@ void read_cosmological_parameters_lens(cosmo_lens **self, FILE *F, error **err)
    read_redshift_info(&(tmp->redshift), FD, err);
    forwardError(*err, __LINE__,);
    if (strcmp(tmp2.nofz_file, "-")!=0) fclose(FD);
+
 
    /* Lensing parameters */
    CONFIG_READ_S(&tmp2, stomo, s, F, c, err);
@@ -259,6 +262,7 @@ void read_cosmological_parameters_lens(cosmo_lens **self, FILE *F, error **err)
        break;
 
    }
+
 
    *self = copy_parameters_lens_only(tmp, err);
    forwardError(*err, __LINE__,);
@@ -383,30 +387,6 @@ void dump_param_lens(cosmo_lens* self, FILE *F, int wnofz, error **err)
 	   self->A_ia);
    if (self->cosmo->nonlinear==halodm) dump_param_only_hm(self->hm, F);
 }
-
-
-void update_cosmo_lens_par_one(cosmo_lens **self, char spar[], double val, error **err)
-{     
-   cosmo_lens *tmp;
-   tmp = copy_parameters_lens_only(*self, err);
-   forwardError(*err, __LINE__,);
-
-   if (strcmp(spar, "Omega_m") == 0) {
-      tmp->cosmo->Omega_m  = val;
-      tmp->cosmo->Omega_de = 1.0 - val; // Flat universe
-   } else if (strcmp(spar, "sigma_8") == 0) {
-      testErrorRet(tmp->cosmo->normmode != 0, ce_wrongValue, "cosmo.par:normmode has to be 0 to use sigma_8 as on-the-fly parameter", *err, __LINE__,);
-      tmp->cosmo->normalization = val;
-   } else {
-      *err = addErrorVA(ce_unknown, "Unsupported on-the-fly parameter %s", *err, __LINE__, spar);
-   }  
-
-   free_parameters_lens(self);
-   *self = copy_parameters_lens_only(tmp, err);
-   forwardError(*err, __LINE__,);
-
-   free_parameters_lens(&tmp);
-} 
 
 double int_for_g(double aprime, void *intpar, error **err)
 {
@@ -628,6 +608,7 @@ double w_limber2(cosmo_lens *self, double wa, double a, int n_bin, int interp, e
             for (i=0; i<N_w; i++) {
                w_arr[i] = (double)i/(double)(N_w - 1.0) * (log(wmax) - log(wmin)) + log(wmin);
                aa[i]    = a_of_w(self->cosmo, exp(w_arr[i]), err);
+               forwardError(*err, __LINE__, -1.0);
             }
             for (i=0; i<N_w; i++) {
                wl2[i]   = w_limber2_one(self, exp(w_arr[i]), aa[i], nn, err);
@@ -800,7 +781,7 @@ double int_for_p_2(double a, void *intpar, error **err)
    gg = gi * gj;
    if (fabs(gg) < EPSILON1) return 0.0;
 
-   /* dw = da/a^2 c/H_0 H_0/H(a)     *
+   /* dw = da/a^2 c/H_0 H_0/h(a)     *
     *    = da/a^2 R_HUBBLE / hoverh0 */
    res  = gg/(asqr*asqr)/hoverh0*R_HUBBLE;
    res *= P_NL_tot(self, a, f, err);             forwardError(*err,__LINE__, -1.0);
@@ -1733,6 +1714,9 @@ int change_xi(cosmo_lens* avant, cosmo_lens* apres)
  * Shear correlation function xi_+ (pm=+1) and xi_- (pm=-1).    *
  * ============================================================ */
 double xi(cosmo_lens* self, int pm, double theta, int i_bin, int j_bin, error **err)
+/* ============================================================ *
+ * Shear correlation function xi_+ (pm=+1) and xi_- (pm=-1).    *
+ * ============================================================ */
 {
    double *table[2];
    double dlogtheta, logthetamin, logthetamax;
@@ -2976,8 +2960,8 @@ double lensing_signal(cosmo_lens *model, double theta, int i_bin, int j_bin, len
 
 /* ============================================================ *
  * Lensing log-likelihood function, for second-order real-space *
- * functions.							                               *
- * Returns -0.5 * chi^2 = log L				                      *
+ * functions.							*
+ * Returns chi^2 = -2 log L					*
  * ============================================================ */
 #define NPERBIN 20
 double chi2_lensing(cosmo_lens* csm, datcov* dc, int return_model, double **model_array, int *Nmodel,
