@@ -1,7 +1,4 @@
 build/
 docs/build
 .ropeproject
-bin
-include/
 lib
-par_files
