@@ -724,7 +724,6 @@ double deriv_w_23(cosmo_lens *self, double wa, int n_bin, double *w2, double *w3
 double int_for_p_z(double z, void *intpar, error **err)
 {
    double hoverh0, s, fKw, f, a, res, wa, gg, a0, w0;
-   int i_bin, j_bin;
    cosmo_lensANDiid* cANDiid;
    cosmo_lens* self;
 
@@ -732,8 +731,7 @@ double int_for_p_z(double z, void *intpar, error **err)
    cANDiid = (cosmo_lensANDiid*)intpar;
    self    = cANDiid->self;
    s       = cANDiid->r;
-   i_bin   = cANDiid->i;
-   j_bin   = cANDiid->j;
+	/* tomographic bin indices i, j are unused here */
 
    a       = 1.0 / (1.0 + z);
 
@@ -2572,23 +2570,21 @@ void datcov2xipm(const datcov *dc, int i_bin, int j_bin, double **xip, double **
       *theta2 = NULL;
    }
 
+	offset = dc->Ntheta * idx_zz(i_bin, j_bin, dc->Nzbin, err);
+	forwardError(*err, __LINE__,);
+	for (i=0; i<*N; i++) {
+		index = offset + i;
+		(*xip)[i]   = dc->data[index];
+		(*theta)[i] = dc->theta[i];
+		if (dc->format==angle_mean || dc->format==angle_wlinear || dc->format==angle_wquadr) {
+			(*theta2)[i] = dc->theta2[i];
+		}
+	}
 
-   offset = dc->Ntheta * idx_zz(i_bin, j_bin, dc->Nzbin, err);
-   forwardError(*err, __LINE__,);
-   for (i=0; i<*N; i++) {
-      index = offset + i;
-      (*xip)[i]   = dc->data[index];
-      (*theta)[i] = dc->theta[i];
-      if (dc->format==angle_mean || dc->format==angle_wlinear || dc->format==angle_wquadr) {
-	 (*theta2)[i] = dc->theta2[i];
-      }
-   }
-   
-   for (i=*N; i<dc->Ntheta; i++) {
-      index = offset + i;
-      (*xim)[i-(*N)] = dc->data[index];
-   }
-
+	for (i=*N; i<dc->Ntheta; i++) {
+		index = offset + i;
+		(*xim)[i-(*N)] = dc->data[index];
+	}
 }
 
 /* Really only reads a covariance (in column format) for xi+ */
@@ -2674,7 +2670,7 @@ void scale_cosmic_variance_ESH09(cosmo_lens *model, gsl_matrix *cov, const datco
 
 /* ============================================================ *
  * Returns +-1, corresponding to type (xip, xim) and angular    *
- * index (for xipm).						*
+ * index (for xipm).															 *
  * ============================================================ */
 int get_pm(lensdata_t type, int i, int Ntheta, error **err)
 {

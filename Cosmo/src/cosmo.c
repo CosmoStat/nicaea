@@ -1205,7 +1205,7 @@ double Bpf(double fff)
 /* This function was directly adopted from Wayne Hu's code, probably quite obsolete */
 double growthk0(cosmo* self, double a)
 {
-    double gk0, g2z0, Omega_denom, Omega_de_z, Omega_m_z, za;
+    double gk0, Omega_denom, Omega_de_z, Omega_m_z, za;
     double z_eq, omhh, T_2_7_sqr;
     za = 1/a - 1;
     
@@ -1218,10 +1218,6 @@ double growthk0(cosmo* self, double a)
     z_eq = 2.50e4 * omhh / T_2_7_sqr / T_2_7_sqr;
     
     gk0 = z_eq/(1.0+za)*2.5*Omega_m_z/(pow(Omega_m_z,4.0/7.0)-Omega_de_z+(1.0+Omega_m_z/2.0)*(1.0+Omega_de_z/70.0));
-    
-    /* g2z0 = z_eq*2.5*self->omega_m/(pow(self->omega_m,4.0/7.0)-self->omega_de+(1.0+self->omega_m/2.0)*(1.0+self->omega_de/70.0));
-    
-    g2z0 = gk0/g2z0; */
     
     return gk0;
 }

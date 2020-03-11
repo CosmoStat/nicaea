@@ -223,7 +223,7 @@ void  writeTPCF_GAL(ConfigGetModel para, error **err)
   size_t i;
       
   /* initilization */
-  double *y1hgcs, *y1hgss, *y2hg;
+  double *y1hgcs = NULL, *y1hgss = NULL, *y2hg = NULL;
   double *x      = malloc(para.nbins*sizeof(double)); /* theta, r or rp */
   double *y      = malloc(para.nbins*sizeof(double)); /* w(theta), wp(rp) or xi(r) */
   
@@ -232,23 +232,23 @@ void  writeTPCF_GAL(ConfigGetModel para, error **err)
   }
 
   switch (para.type) {
-  case WTHETA :
-    y1hgcs = woftheta(para.model, p1hgcs, x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
-    y1hgss = woftheta(para.model, p1hgss, x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
-    y2hg   = woftheta(para.model, p2hg,   x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
-    break;
-  case WP:
-    y1hgcs = wp(para.model, p1hgcs, x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
-    y1hgss = wp(para.model, p1hgss, x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
-    y2hg   = wp(para.model, p2hg,   x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
-    break;
-  case XI:
-    y1hgcs = xiofr(para.model, p1hgcs, x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
-    y1hgss = xiofr(para.model, p1hgss, x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
-    y2hg   = xiofr(para.model, p2hg,   x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
-    break;
+	  case WTHETA :
+		  y1hgcs = woftheta(para.model, p1hgcs, x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
+		  y1hgss = woftheta(para.model, p1hgss, x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
+		  y2hg   = woftheta(para.model, p2hg,   x, para.nbins, 0, 0, err);  forwardError(*err, __LINE__,);
+		  break;
+	  case WP:
+		  y1hgcs = wp(para.model, p1hgcs, x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
+		  y1hgss = wp(para.model, p1hgss, x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
+		  y2hg   = wp(para.model, p2hg,   x, para.nbins, para.model->pi_max, GG, err);  forwardError(*err, __LINE__,);
+		  break;
+	  case XI:
+		  y1hgcs = xiofr(para.model, p1hgcs, x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
+		  y1hgss = xiofr(para.model, p1hgss, x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
+		  y2hg   = xiofr(para.model, p2hg,   x, para.nbins, GG, err);  forwardError(*err, __LINE__,);
+		  break;
   }
-  
+
 
   for(i=0;i<para.nbins;i++) y[i] = y1hgcs[i] + y1hgss[i] + y2hg[i]; 
   
