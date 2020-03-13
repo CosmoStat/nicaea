@@ -51,11 +51,10 @@ void write_tpmlog(int n, double thmin, double thmax, const double *c, error **er
 }
 
 
-void write_xi_pm_EB(int N, double thmin, double thmax, const double *c_cosebi,
+void write_xi_pm_EB(char *name, int N, double thmin, double thmax, const double *c_cosebi,
 		    const double *E_cos, const double *B_cos, error **err)
 {
    double xi_pm_EB[4], theta, fth;
-   const char name[128] = "xi_pm_EB.dat";
    int n;
    FILE *F;
 
@@ -114,8 +113,6 @@ double E_cosebi_data(const double *xip, const double *xim, const double *theta, 
       forwardError(*err, __LINE__, -1.0);
       rm      += summand;
 
-      //printf("%g %g   %g %g\n", theta[i]/arcmin, z, xip[i], xim[i]);
-
    }
 
    if (B_cosebi != NULL) {
@@ -123,6 +120,23 @@ double E_cosebi_data(const double *xip, const double *xim, const double *theta, 
    }
 
    return 0.5 * (rp + rm);
+}
+
+int idx_tomo(int n, int Np1, int i_bin, int j_bin, int Nzbin)
+{
+	int idx;
+	idx = (i_bin * Nzbin + (j_bin - i_bin)) * Np1 + n;
+	return idx;
+}
+
+double get_Cos_tomo(double *Cos_tomo, int n, int Np1, int i_bin, int j_bin, int Nzbin)
+{
+	return Cos_tomo[idx_tomo(n, Np1, i_bin, j_bin, Nzbin)];
+}
+
+void set_Cos_tomo(double value, double *Cos_tomo, int n, int Np1, int i_bin, int j_bin, int Nzbin)
+{
+	Cos_tomo[idx_tomo(n, Np1, i_bin, j_bin, Nzbin)] = value;
 }
 
 void usage(int ex)
@@ -149,14 +163,14 @@ void usage(int ex)
 int main(int argc, char* argv[])
 {
    error *myerr = NULL, **err;
-   double *E_cos, *B_cos;
+   double E_cos, B_cos;
    double Psimin, Psimax;
    int c, N, n, Nxi, write_T, write_X, i_bin, j_bin, Nzbin, quiet;
    cosmo_lens *model;
    char *xi_name, *path, *strp, *output_name;
    FILE *F, *Fout;
    datcov *dc;
-   double *xip, *xim, *theta, *theta2, *c_cosebi;
+   double *xip, *xim, *theta, *theta2, *c_cosebi, *E_cos_tomo, *B_cos_tomo;
 
 
    err = &myerr;
@@ -251,9 +265,6 @@ end_arg:
       quitOnError(*err, __LINE__, stderr);
    }
 
-   E_cos = malloc_err(sizeof(double) * (N+1), err);      quitOnError(*err, __LINE__, stderr);
-   B_cos = malloc_err(sizeof(double) * (N+1), err);      quitOnError(*err, __LINE__, stderr);
-   
    if (xi_name == NULL) {
 
       /* COSEBIs from theoretical model */
@@ -265,6 +276,11 @@ end_arg:
       fclose(F);
       Nzbin = model->redshift->Nzbin;
 
+		E_cos_tomo = malloc_err(sizeof(double) * (N+1) * Nzbin * (Nzbin+1)/2, err);
+		quitOnError(*err, __LINE__, stderr);
+		B_cos_tomo = malloc_err(sizeof(double) * (N+1) * Nzbin * (Nzbin+1)/2, err);
+		quitOnError(*err, __LINE__, stderr);
+   
       dump_param(model->cosmo, stdout);
       //fprintf(Fout, "# n E_n^{ij} B_n^{ij}\n# n");
       for (i_bin=0; i_bin<Nzbin; i_bin++) {
@@ -283,9 +299,11 @@ end_arg:
             for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
                if (model->tomo==tomo_auto_only && i_bin!=j_bin) continue;
                if (model->tomo==tomo_cross_only && i_bin==j_bin) continue;
-               E_cos[n] = E_cosebi(model, n, Psimin*arcmin, Psimax*arcmin, i_bin, j_bin, path, B_cos+n, err);
+               E_cos = E_cosebi(model, n, Psimin*arcmin, Psimax*arcmin, i_bin, j_bin, path, &B_cos, err);
                quitOnError(*err, __LINE__, stderr);
-               fprintf(Fout, " % 15.6g % 15.6g", E_cos[n], B_cos[n]);
+               fprintf(Fout, " % 15.6g % 15.6g", E_cos, B_cos);
+					set_Cos_tomo(E_cos, E_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
+					set_Cos_tomo(B_cos, B_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
             }
          }
 
@@ -303,6 +321,7 @@ end_arg:
       dc = malloc_err(sizeof(datcov), err);
       quitOnError(*err, __LINE__, stderr);
       dc->format = angle_center;
+		dc->usecov = 0;
       /* Reading xi file */
       read_data_tomo(dc, xi_name, 0, second_order, err);
       quitOnError(*err, __LINE__, stderr);
@@ -310,8 +329,12 @@ end_arg:
       Nzbin    = dc->Nzbin;
       dc->type = xipm;
 
+		E_cos_tomo = malloc_err(sizeof(double) * (N+1) * Nzbin * (Nzbin+1)/2, err);
+		quitOnError(*err, __LINE__, stderr);
+		B_cos_tomo = malloc_err(sizeof(double) * (N+1) * Nzbin * (Nzbin+1)/2, err);
+		quitOnError(*err, __LINE__, stderr);
+   
       /* Header */
-      //fprintf(Fout, "# n E_n^{ij} B_n^{ij}\n");
       fprintf(Fout, "# n   ");
       for (i_bin=0; i_bin<Nzbin; i_bin++) {
          for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
@@ -320,27 +343,36 @@ end_arg:
       }
       fprintf(Fout, "\n");
 
-      for (n=1; n<=N; n++) {
-         fprintf(Fout, "%3d", n);
+		for (i_bin=0; i_bin<Nzbin; i_bin++) {
+			for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
+				datcov2xipm(dc, i_bin, j_bin, &xip, &xim, &theta, &theta2, &Nxi, err);
+				quitOnError(*err, __LINE__, stderr);
 
-         for (i_bin=0; i_bin<Nzbin; i_bin++) {
-            for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
-               datcov2xipm(dc, i_bin, j_bin, &xip, &xim, &theta, &theta2, &Nxi, err);
+				for (n=1; n<=N; n++) {
+               E_cos = E_cosebi_data(xip, xim, theta, Nxi, n, Psimin*arcmin, Psimax*arcmin, c_cosebi, &B_cos, err);
                quitOnError(*err, __LINE__, stderr);
-
-               E_cos[n] = E_cosebi_data(xip, xim, theta, Nxi, n, Psimin*arcmin, Psimax*arcmin, c_cosebi, B_cos+n, err);
-               quitOnError(*err, __LINE__, stderr);
-               fprintf(Fout, "   % .9g % .9g", E_cos[n], B_cos[n]);
+					set_Cos_tomo(E_cos, E_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
+					set_Cos_tomo(B_cos, B_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
             }
+				free(xip);
+				free(xim);
+				free(theta);
+			}
+		}
+      del_data_cov(&dc);
+
+		for (n=1; n<=N; n++) {
+			fprintf(Fout, "%3d", n);
+			for (i_bin=0; i_bin<Nzbin; i_bin++) {
+				for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
+					E_cos = get_Cos_tomo(E_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
+					B_cos = get_Cos_tomo(B_cos_tomo, n, N+1, i_bin, j_bin, Nzbin);
+               fprintf(Fout, "   % .9g % .9g", E_cos, B_cos);
+				}
          }
          fprintf(Fout, "\n");
+		}
 
-         free(xip);
-         free(xim);
-         free(theta);
-      }
-
-      del_data_cov(&dc);
 
    }
 
@@ -364,12 +396,25 @@ end_arg:
 
       /* Calculate xipmEB according to SEK 10 eq (40) */
 
-      write_xi_pm_EB(N, Psimin*arcmin, Psimax*arcmin, c_cosebi, E_cos, B_cos, err);
+		char name[128];
+		double *E_cos_n, *B_cos_n;
+		int idx;
+      for (i_bin=0; i_bin<Nzbin; i_bin++) {
+         for (j_bin=i_bin; j_bin<Nzbin; j_bin++) {
+				sprintf(name, "xi_pm_EB_%d_%d.dat", i_bin, j_bin);
+
+				/* MKDEBUG 12/03/2020: The following is not tested! */
+				idx = idx_tomo(1, N+1, i_bin, j_bin, Nzbin); 
+				E_cos_n = E_cos_tomo + idx;
+				B_cos_n = B_cos_tomo + idx;
+				write_xi_pm_EB(name, N, Psimin*arcmin, Psimax*arcmin, c_cosebi, E_cos_n, B_cos_n, err);
+			}
+		}
 
    }
 
-   free(E_cos);
-   free(B_cos);
+	free(E_cos_tomo);
+	free(B_cos_tomo);
 
    return 0;
 }
