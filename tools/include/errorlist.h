@@ -60,8 +60,6 @@ void endError(error **err);
 # endif
 #endif
 
-
-
 #define _DEBUGHERE_(extra, ...) fprintf(stderr, "%s:(" __FILE__ ":%d) "extra"\n", __func__, __LINE__, __VA_ARGS__);
 
 #define someErrorVA(errV, txt, prev, next, li, ...) newErrorVA(errV, __func__, "(" __FILE__ ":"#li")", txt, prev, next, __VA_ARGS__)
