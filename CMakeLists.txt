@@ -99,7 +99,6 @@ target_link_libraries(third_order_demo nicaea ${LIBS})
 add_executable(getHODModel Demo/getHODModel.c)
 target_link_libraries(getHODModel nicaea ${LIBS})
 
-
 # Install nicaea library
 INSTALL(TARGETS nicaea DESTINATION lib)
 
