@@ -96,7 +96,7 @@ double chi2_hm(cosmo_hm *model, halodata_t halodata, halomode_t halomode, const 
   }
   
   /* w(theta), wp(rp) */
-  double *x, *y_model, IC, RR_total;
+  double *x, *y_model=NULL, IC, RR_total;
   double *ystellar, *y1hgcs, *y1hgss, *y2hg; 
   switch (halodata) {
   case w_of_theta :
@@ -226,7 +226,8 @@ double *woftheta(cosmo_hm *model, pofk_t pofk, double *theta, int Ntheta, int i_
   forwardError(*err, __LINE__, NULL);
   
   /* tabulate xi(r) */
-  int i,j,k,N      = 40;
+  int i,j=0,k;
+  int N            = 40;
   double *u        = malloc_err(N*sizeof(double), err);  forwardError(*err, __LINE__, NULL);
   double *logu     = malloc_err(N*sizeof(double), err);  forwardError(*err, __LINE__, NULL);
   double umin      = 0.001, umax = 800;

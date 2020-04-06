@@ -10,8 +10,8 @@ cmake_policy(SET CMP0042 NEW)
 #
 
 # Use conda path
-IF(DEFINED $ENV{CONDA_PREFIX})
-   message("-- Using CONDA_PREFIX=${CONDA_PREFIX} for libraries")
+IF(DEFINED ENV{CONDA_PREFIX})
+   message("-- Using CONDA_PREFIX=$ENV{CONDA_PREFIX} for libraries")
    include_directories(${CMAKE_INSTALL_PREFIX}/include)
    link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 else()
@@ -27,11 +27,10 @@ endif()
 set(LIBS ${LIBS} gsl gslcblas)
 set(LIBS ${LIBS} fftw3 m) 
 
-
 #
 # Compilation flags
 #
-set(CMAKE_C_FLAGS "-Wuninitialized -Wdeprecated-declarations -pedantic -O3 -fPIC -std=gnu9x")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wuninitialized -Wdeprecated-declarations -pedantic -O3 -fPIC -std=gnu9x")
 
 
 #
