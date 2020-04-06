@@ -12,15 +12,29 @@ cmake_policy(SET CMP0042 NEW)
 #
 # Loading dependencies
 #
-pkg_check_modules(PKGS REQUIRED fftw3 gsl)
-include_directories(${PKGS_INCLUDE_DIRS})
-link_directories(${PKGS_LIBRARY_DIRS})
 
+# Use conda path
+IF(DEFINED ENV{CONDA_PREFIX})
+   message("-- Using CONDA_PREFIX=$ENV{CONDA_PREFIX} for libraries")
+   include_directories(${CMAKE_INSTALL_PREFIX}/include)
+   link_directories(${CMAKE_INSTALL_PREFIX}/lib)
+else()
+   message("-- Looking for external libraries...")
+
+   include(FindPkgConfig)
+   list(APPEND CMAKE_MODULE_PATH  "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+   pkg_check_modules(PKGS REQUIRED fftw3 gsl)
+   include_directories(${PKGS_INCLUDE_DIRS})
+   link_directories(${PKGS_LIBRARY_DIRS})
+endif()
+
+set(LIBS ${LIBS} gsl gslcblas)
+set(LIBS ${LIBS} fftw3 m) 
 
 #
 # Compilation flags
 #
-set(CMAKE_C_FLAGS "-Wall -Wuninitialized -pedantic -O3 -fPIC -std=gnu9x")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wuninitialized -Wdeprecated-declarations -pedantic -O3 -fPIC -std=gnu9x")
 
 
 #
