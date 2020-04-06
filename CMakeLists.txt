@@ -10,7 +10,7 @@ cmake_policy(SET CMP0042 NEW)
 #
 
 # Use conda path
-IF(DEFINED $ENV{CONDA_PREFIX})
+IF(DEFINED ENV{CONDA_PREFIX})
    message("-- Using CONDA_PREFIX=${CONDA_PREFIX} for libraries")
    include_directories(${CMAKE_INSTALL_PREFIX}/include)
    link_directories(${CMAKE_INSTALL_PREFIX}/lib)
