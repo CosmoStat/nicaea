@@ -1,28 +1,30 @@
 /* ============================================================ *
  * cosmo.c							                                  *
  * Martin Kilbinger, Karim Benabed 2006 -               			 *
- *								*
+ * Shimin Gu (massive neutrinos)                                *
+ *								                                        *
  * Early versions of the power spectrum code (linear +          *
- * PD96-nonlinear) are based on a program by P. Schneider.	*
+ * PD96-nonlinear) are based on a program by P. Schneider.	    *
  * The Smith et al. (2003) non-linear power spectrum is taken   *
- * from the halofit program by R.E.Smith and J.Peacock.		*
- *								*
- * References:							*
- * - Press et al., Numerical Recipes in C (NR)			*
- * - Carroll, Press & Turner 1992 (CPT)				*
- * - Peacock & Dodds 1994, 1996 (PD2, PD)			*
- * - Bardeen, Bond, Kaiser & Szalay 1986 (BBKS)			*
- * - Bond & Efstathiou 1984					*
- * - Smith et al. 2003						*
- * - Eisenstein & Hu 1998					*
- * - Sugijyama 1995						*
- * - Heath et al. 1997						*
- * - Wetterich 2004						*
- * - Percival 2005						*
- * - Linder & Jenkins 2003					*
+ * from the halofit program by R.E.Smith and J.Peacock.		    *
+ *							                                         	 *
+ * References:							                               *
+ * - Press et al., Numerical Recipes in C (NR)			          *
+ * - Carroll, Press & Turner 1992 (CPT)				             *
+ * - Peacock & Dodds 1994, 1996 (PD2, PD)			                *
+ * - Bardeen, Bond, Kaiser & Szalay 1986 (BBKS)			          *
+ * - Bond & Efstathiou 1984					                      *
+ * - Smith et al. 2003						                         *
+ * - Eisenstein & Hu 1998					                         *
+ * - Eisenstein & Hu 1999													 *
+ * - Sugijyama 1995						                            *
+ * - Heath et al. 1997						                         *
+ * - Wetterich 2004						                            *
+ * - Percival 2005						                            *
+ * - Linder & Jenkins 2003					                         *
  * - Linder 2003                                                *
- * - Jassal, Bagla & Padmanabhan 2005				*
- * - Takahashi et al. 2012					*
+ * - Jassal, Bagla & Padmanabhan 2005				                *
+ * - Takahashi et al. 2012					                         *
  * ============================================================ */
 
 
@@ -439,7 +441,11 @@ void set_norm(cosmo* self, error **err)
 
    if (self->normmode==norm_s8) {
       self->sigma_8 = self->normalization;
-      k_pivot       = 0.05; // /self->h_100;
+		/* MKDEBUG 25/02/2020, this scale was lowered dramatically, from 0.05.
+		 * This helps to better match sigma_8 from A_S, but might cause problems,
+		 * e.g. in the initialisation.
+		 */
+      k_pivot       = 0.000002; // /self->h_100;
       As            = P_L(self, 1.0, k_pivot, err);        forwardError(*err, __LINE__,);
       As           /= pref_pert_poiss(self->Omega_m, self->n_spec, self->h_100, k_pivot);
       As           /= P_L_nonorm(self, 1.0, k_pivot, err); forwardError(*err, __LINE__,);
@@ -709,6 +715,17 @@ double Omega_de_a(cosmo* self,double a, double Esqrpre, error **err)
    return res;
 }
 
+double Omega_nu_a(cosmo* self, double a, double Esqrpre, error **err)
+{
+    double EE;
+    if (Esqrpre>0) EE = Esqrpre;
+    else {
+        EE = Esqr(self, a, 0, err);
+        forwardError(*err,__LINE__,0);
+    }
+    return self->Omega_nu_mass/(a*a*a)/EE;
+}
+
 double w_nu_mass(cosmo *self, double a)
 {
    double m_nu, w, m0, alf, bet;
@@ -721,7 +738,7 @@ double w_nu_mass(cosmo *self, double a)
    w = pow(1.0+pow(m_nu/m0*a, alf), -bet)/3.0;
 
    /* 1/3 ok for m_nu <= 0.05 eV */
-   //return (1+0.618232*pow(m_nu*a,0.753005))/(1+9.58117*pow(m_nu*a,1.34954));
+
    return w;
 }
 
@@ -898,101 +915,127 @@ double T_tilde(const cosmo *self, double k, double alpha_c, double beta_c)
 }
 
 /* ============================================================ *
- * Returns sqaure of transfer function times k^n, [k] = h/Mpc.	*
+ * Returns sqaure of transfer function times k^n, [k] = h/Mpc.  *
  * ============================================================ */
-double Tsqr_one(cosmo *self, double k, double Gamma_eff, error **err)
+double Tsqr_one(cosmo *self, double k, double a, double Gamma_eff, error **err)
 {
    double f1, f2, q, res, L, C;
    double Tc, Tb, f, a1, a2, om, fb, fc,b1, b2, alpha_c, beta_c, T_2_7_sqr, z_eq, z_d,
-     beta_node, beta_b, alpha_b, tilde_s, R_d, k_eq, s;
+    beta_node, beta_b, alpha_b, tilde_s, R_d, k_eq, s;
 
    switch (self->transfer) {
 
       case bbks :
  
-	 q = k/Gamma_eff;
-         f1 = log(1 + 2.34*q)/(2.34*q);
-         f2 = 1 + q*(3.89 + q*(259.21 + q*(162.771336 + q*2027.16958081)));
-         res = dsqr(f1)/sqrt(f2)*pow(k, self->n_spec);
-         break;
+			q = k/Gamma_eff;
+			f1 = log(1 + 2.34*q)/(2.34*q);
+			f2 = 1 + q*(3.89 + q*(259.21 + q*(162.771336 + q*2027.16958081)));
+			res = dsqr(f1)/sqrt(f2)*pow(k, self->n_spec);
+			break;
 
-      case eisenhu : 
+		case eisenhu : 
 
-	 /* [q] = [kk] = h/Mpc. EH98 (28) */
-	 q = k * dsqr(T_CMB/2.7)/Gamma_eff;
+			/* [q] = [kk] = h/Mpc. EH98 (28) */
+			q = k * dsqr(T_CMB/2.7)/Gamma_eff;
 
-	 /* W.Hu's problem set 4 */
-	 /* L = log(2.71828 + 1.84*q*alpha_Gamma); */
-	 /* C = 14.4 + 325./(1. + 60.5*pow(q, 1.11)); */
+			/* EH98 (29) */
+			if (fabs(self->Omega_nu_mass)<EPSILON) {
+				L = log(2.*2.71828 + 1.8*q);
+				C = 14.2 + 731.0/(1.0 + 62.5*q);
 
-	 /* EH98 (29) */
-	 L = log(2.*2.71828 + 1.8*q);
-	 C = 14.2 + 731.0/(1.0 + 62.5*q);
+				res = dsqr(L/(L + C*q*q));
+			} else {
+				/* EH99 (6) - (24) */
+				double f_nu = self->Omega_nu_mass / self->Omega_m;
+				double f_b = self->Omega_b / self->Omega_m;
+				double f_nub = f_nu + f_b;
+				double f_cb = 1 - f_nu;
+				double beitac = 1/(1 - 0.949*f_nub);
+				L = log(2.71828 + 1.84*beitac*q*self->transfer_alpha_Gamma);
+				C = 14.4 + 325.0/(1.0 + 60.5*pow(q,1.11));
+				double T_sup = L/(L+C*q*q);
+				//double N_nu = 3;
+				double N_nu = self->Neff_nu_mass;
+				double q_nu = 3.92*q*sqrt(3)/f_nu;
+				double Bk = 1.2*pow(f_nu,0.64)*pow(N_nu,0.3+0.6*f_nu);
+				Bk /= (pow(q_nu,-1.6) + pow(q_nu,0.8));
+				Bk += 1;
+				double T_master = T_sup * Bk;
+				double yfs = 17.2 * f_nu;
+				yfs *= 1 + 0.488*pow(f_nu,-7/6);
+				yfs *= pow(N_nu * q / f_nu,2);
+				double pcb = Bpf(f_cb);
+				double D1z = growthk0(self,a);
+				double D_cbnu = D1z;
+				D_cbnu /= 1 + yfs;
+				D_cbnu += pow(f_cb,0.7/pcb);
+				D_cbnu = pow(D_cbnu,pcb/0.7) * pow(D1z,1-pcb);
+				res = dsqr(T_master * D_cbnu / D1z);
+			}
+			res *= pow(k, self->n_spec);
+			break;
 
-	 res = dsqr(L/(L + C*q*q))*pow(k, self->n_spec);
-	 break;
+		case eisenhu_osc :
 
-      case eisenhu_osc :
+			om      = self->Omega_m * self->h_100 * self->h_100;
+			fb      = self->Omega_b / self->Omega_m;
+			fc      = (self->Omega_m - self->Omega_b) / self->Omega_m;
 
-	 om      = self->Omega_m * self->h_100 * self->h_100;
-	 fb      = self->Omega_b / self->Omega_m;
-	 fc      = (self->Omega_m - self->Omega_b) / self->Omega_m;
+			if (self->transfer_s<0) {
+				self->transfer_s = r_sound_drag_analytical(self, err);
+				forwardError(*err, __LINE__, 0.0);
+			}
+			s = self->transfer_s;
 
-	 if (self->transfer_s<0) {
-	    self->transfer_s = r_sound_drag_analytical(self, err);
-	    forwardError(*err, __LINE__, 0.0);
-	 }
-	 s = self->transfer_s;
+			/* Cold dark matter transfer function */
 
-	 /* Cold dark matter transfer function */
+			/* EH98 (11, 12) */
+			a1      = pow(46.9*om, 0.670) * (1.0 + pow(32.1*om, -0.532));
+			a2      = pow(12.0*om, 0.424) * (1.0 + pow(45.0*om, -0.582));
+			alpha_c = pow(a1, -fb) * pow(a2, -DCUB(fb));
+			b1      = 0.944 / (1.0 + pow(458.0*om, -0.708));
+			b2      = pow(0.395*om, -0.0266);
+			beta_c  = 1.0 + b1*(pow(fc, b2) - 1.0);
+			beta_c  = 1.0 / beta_c;
 
-	 /* EH98 (11, 12) */
-	 a1      = pow(46.9*om, 0.670) * (1.0 + pow(32.1*om, -0.532));
-	 a2      = pow(12.0*om, 0.424) * (1.0 + pow(45.0*om, -0.582));
-	 alpha_c = pow(a1, -fb) * pow(a2, -DCUB(fb));
-	 b1      = 0.944 / (1.0 + pow(458.0*om, -0.708));
-	 b2      = pow(0.395*om, -0.0266);
-	 beta_c  = 1.0 + b1*(pow(fc, b2) - 1.0);
-	 beta_c  = 1.0 / beta_c;
+			/* EH98 (17, 18) */
+			f  = 1.0 / (1.0 + dsqr(dsqr(k * s / 5.4)));
+			Tc = f * T_tilde(self, k, 1, beta_c) + (1.0 - f) * T_tilde(self, k, alpha_c, beta_c);
 
-	 /* EH98 (17, 18) */
-	 f  = 1.0 / (1.0 + dsqr(dsqr(k * s / 5.4)));
-	 Tc = f * T_tilde(self, k, 1, beta_c) + (1.0 - f) * T_tilde(self, k, alpha_c, beta_c);
+			/* Baryon transfer function */
 
-	 /* Baryon transfer function */
+			/* EH98 (14, 21) */
+			z_d       = z_drag(self);
+			R_d       = ratio_b_gamma(self, 1.0 / (z_d + 1.0));
+			T_2_7_sqr = dsqr(T_CMB/2.7);
+			k_eq      = 7.46e-2 * om / T_2_7_sqr / self->h_100;   /* [h/Mpc] */
+			z_eq      = 2.50e4 * om / T_2_7_sqr / T_2_7_sqr;
+			alpha_b   = 2.07 * k_eq * s * pow(1.0 + R_d, -0.75)
+				* G_EH98((1.0 + z_eq) / (1.0 + z_d));
 
-	 /* EH98 (14, 21) */
-	 z_d       = z_drag(self);
-	 R_d       = ratio_b_gamma(self, 1.0 / (z_d + 1.0));
-	 T_2_7_sqr = dsqr(T_CMB/2.7);
-	 k_eq      = 7.46e-2 * om / T_2_7_sqr / self->h_100;   /* [h/Mpc] */
-	 z_eq      = 2.50e4 * om / T_2_7_sqr / T_2_7_sqr;
-	 alpha_b   = 2.07 * k_eq * s * pow(1.0 + R_d, -0.75)
-	              * G_EH98((1.0 + z_eq) / (1.0 + z_d));
+			beta_node = 8.41 * pow(om, 0.435);
+			tilde_s   = s / pow(1.0 + DCUB(beta_node / (k * s)), 1.0/3.0);
+			beta_b    = 0.5 + fb + (3.0 - 2.0 * fb) * sqrt(dsqr(17.2 * om) + 1.0);
+			/* [tilde_s] = Mpc/h */
 
-	 beta_node = 8.41 * pow(om, 0.435);
-	 tilde_s   = s / pow(1.0 + DCUB(beta_node / (k * s)), 1.0/3.0);
-	 beta_b    = 0.5 + fb + (3.0 - 2.0 * fb) * sqrt(dsqr(17.2 * om) + 1.0);
-	 /* [tilde_s] = Mpc/h */
+			Tb = (T_tilde(self, k, 1.0, 1.0) / (1.0 + dsqr(k * s / 5.2))
+					+ alpha_b / (1.0 + DCUB(beta_b/(k * s))) * exp(-pow(k / k_silk(self), 1.4)) )
+				* sinc(k*tilde_s);
 
-	 Tb = (T_tilde(self, k, 1.0, 1.0) / (1.0 + dsqr(k * s / 5.2))
-	       + alpha_b / (1.0 + DCUB(beta_b/(k * s))) * exp(-pow(k / k_silk(self), 1.4)) )
-	   * sinc(k*tilde_s);
+			/* Total transfer function */
+			res = dsqr(fb * Tb + fc * Tc) * pow(k, self->n_spec);
+			break;
 
-	 /* Total transfer function */
-	 res = dsqr(fb * Tb + fc * Tc) * pow(k, self->n_spec);
-	 break;
+			//case be84 :
+			//Delta_L = Delta_L_BE2(self, k, err);   forwardError(*err, __LINE__, 0.0);
+			//break;
 
-	 //case be84 :
-	 //Delta_L = Delta_L_BE2(self, k, err);   forwardError(*err, __LINE__, 0.0);
-	 //break;
+		default :
+			*err = addError(ce_unknown, "Unknown transfer function", *err, __LINE__);
+			return 0; 
+	}
 
-      default :
-	 *err = addError(ce_unknown, "Unknown transfer function", *err, __LINE__);
-	 return 0; 
-   }
-
-   return res;
+	return res;
 }
 
 double Gamma_Sugiyama(cosmo *self)
@@ -1118,11 +1161,15 @@ double z_drag(cosmo *self)
    h2 = self->h_100*self->h_100;
    ob = self->Omega_b*h2;
 
+   fnu = self->Omega_nu_mass / self->Omega_m;
+
    /* Neutrino fraction, e.g. cosmomc:bao.f90. Neutrinos are relativistic at the drag epoch. *
     * In Percival (2007,2009), fnu=0 is used. */
    //fnu = (21.0/8.0)*pow(4.0/11.0, 4.0/3.0);
-   fnu = 0.0;
 
+   //fnu = 0.0;
+
+	/* MKDEBUG: Check Om - Ob = Onumass, always true? */
    om = self->Omega_m*h2  - fnu * (self->Omega_m - self->Omega_b)*h2;
 
    b1 = 0.313*pow(om, -0.419)*(1.0 + 0.607*pow(om, 0.674));
@@ -1144,17 +1191,49 @@ double G_EH98(double y)
    return G;
 }
 
+double Bpf(double fff)
+{
+    double ppp;
+    
+    ppp = 1 + (24*fff);
+    ppp = 5 - sqrt(ppp);
+    ppp = 0.25*ppp;
+    
+    return ppp;
+}
+
+/* This function was directly adopted from Wayne Hu's code, probably quite obsolete */
+double growthk0(cosmo* self, double a)
+{
+    double gk0, Omega_denom, Omega_de_z, Omega_m_z, za;
+    double z_eq, omhh, T_2_7_sqr;
+    za = 1/a - 1;
+    
+    Omega_denom = self->Omega_de + pow(1.0+za,3) * self->Omega_m;
+    Omega_de_z = self->Omega_de / Omega_denom;
+    Omega_m_z = self->Omega_m * pow(1.0+za,3) / Omega_denom;
+    
+    omhh = self->Omega_m*self->h_100*self->h_100;
+    T_2_7_sqr = dsqr(T_CMB/2.7);
+    z_eq = 2.50e4 * omhh / T_2_7_sqr / T_2_7_sqr;
+    
+    gk0 = z_eq/(1.0+za)*2.5*Omega_m_z/(pow(Omega_m_z,4.0/7.0)-Omega_de_z+(1.0+Omega_m_z/2.0)*(1.0+Omega_de_z/70.0));
+    
+    return gk0;
+}
+
 /* ============================================================ *
  * Returns T^2(k) * k^n, [k] = h/Mpc.				*
  * ============================================================ */
 #define Nk 500
-double Tsqr(cosmo* self, double k, error **err)
+double Tsqr(cosmo* self, double a, double k, error **err)
 {
 
    double dlogk, logkmin, logkmax;
    double *table;
    interTable *transferFct;
    double kk, f1, Gamma_eff, omhh, f_b;
+   double N_nu,f_nu, f_cdm, al_nu, f_bnu, f_bc, z_eq, z_d, T_2_7_sqr,y_drag,pc,pcb;
    int i;
 
    if (self->transferFct==NULL) {
@@ -1183,39 +1262,70 @@ double Tsqr(cosmo* self, double k, error **err)
 	    /* TODO: neutrinos */
 	    Gamma_eff = Gamma_Sugiyama(self);
 	    for (i=0,kk=k_min; i<Nk; i++,kk*=exp(dlogk)) {
-	       table[i] = log(Tsqr_one(self, kk, Gamma_eff, err));
+	       table[i] = log(Tsqr_one(self, kk, a, Gamma_eff, err));
 	       forwardError(*err,__LINE__,0);
 	    }
 	    break;
 
 	 case eisenhu:
-	    /* TODO: neutrinos */
 	    omhh = self->Omega_m*self->h_100*self->h_100;
 	    f_b  = self->Omega_b/self->Omega_m;
+            
+		 f_nu = self->Omega_nu_mass/self->Omega_m;
+		 f_cdm = (self->Omega_m - self->Omega_nu_mass - self->Omega_b)/self->Omega_m;
+		 f_bc = (self->Omega_m - self->Omega_nu_mass)/self->Omega_m;
+		 //printf ("fcdm, fbc  = %e, %e \n", f_cdm, f_bc);
+		 f_bnu = (self->Omega_nu_mass + self->Omega_b)/self->Omega_m;
+		 //printf ("Om %e, Onu %e, Ob %e \n", self->Omega_m, self->Omega_nu_mass, self->Omega_b);
+		 T_2_7_sqr = dsqr(T_CMB/2.7);
+		 z_eq = 2.50e4 * omhh / T_2_7_sqr / T_2_7_sqr;
+		 z_d = z_drag(self);
+		 y_drag = z_eq / (z_d+1);
+		 pc = Bpf(f_cdm);
+		 pcb = Bpf(f_bc);
 
-  	    /* EH98 (31) */
-	    if (self->transfer_alpha_Gamma<0)
-	      self->transfer_alpha_Gamma = 1 - 0.328*log(431*omhh)*f_b 
-		+ 0.38*log(22.3*omhh)*f_b*f_b;
+		 //N_nu = 3;
+		 N_nu = self->Neff_nu_mass;
 
-	    for (i=0,kk=k_min; i<Nk; i++,kk*=exp(dlogk)) {
+		 /* EH98 (31) */
+		 if (self->transfer_alpha_Gamma<0)
+			 self->transfer_alpha_Gamma = 1 - 0.328*log(431*omhh)*f_b 
+				 + 0.38*log(22.3*omhh)*f_b*f_b;
 
-	       /* EH98 (30) */
-	       Gamma_eff = self->Omega_m*self->h_100*(self->transfer_alpha_Gamma + 
-		      (1.0-self->transfer_alpha_Gamma)/(1.0+dsqr(dsqr(0.43*kk*self->transfer_s))));
-	       table[i] = log(Tsqr_one(self, kk, Gamma_eff, err));
-	       forwardError(*err, __LINE__, 0);
+		 if (self->Omega_nu_mass > EPSILON)
+		 {
+			 al_nu = 1;
+			 al_nu /= ((3 - 4*pc)*(7 - 4*pcb));
+			 al_nu += 1;
+			 al_nu *= pow(1+y_drag,-1);
+			 al_nu *= (pc*0.5 + pcb*0.5);
+			 al_nu += 1;  
+			 al_nu *= (5 - 2*(pc+pcb));
+			 al_nu /= (5 - 4*pcb);
+			 al_nu *= f_cdm / f_bc;
+			 al_nu *= 1 - 0.553*f_bnu + 0.126*pow(f_bnu,3);
+			 al_nu /= 1 - 0.193*sqrt(N_nu*f_nu) + 0.169*f_nu*pow(N_nu,0.2);
+			 al_nu *= pow(1+y_drag,pcb-pc);
+			 self->transfer_alpha_Gamma = sqrt(al_nu);
+		 }
+		 for (i=0,kk=k_min; i<Nk; i++,kk*=exp(dlogk)) {
 
-	    }
-	    break;
+			 /* EH98 (30) */
+			 Gamma_eff = self->Omega_m*self->h_100*(self->transfer_alpha_Gamma + 
+					 (1.0-self->transfer_alpha_Gamma)/(1.0+dsqr(dsqr(0.43*kk*self->transfer_s))));
+			 table[i] = log(Tsqr_one(self, kk, a, Gamma_eff, err));
+			 forwardError(*err, __LINE__, 0);
+
+		 }
+		 break;
 
 	 case eisenhu_osc :
 
-	    for (i=0,kk=k_min; i<Nk; i++,kk*=exp(dlogk)) {
-	       table[i] = log(Tsqr_one(self, kk, -1.0, err));
-	       forwardError(*err, __LINE__, 0.0);
-	    }
-	    break;
+		 for (i=0,kk=k_min; i<Nk; i++,kk*=exp(dlogk)) {
+			 table[i] = log(Tsqr_one(self, kk, a, -1.0, err));
+			 forwardError(*err, __LINE__, 0.0);
+		 }
+		 break;
 
 	 case be84 :
 	    break;
@@ -1235,7 +1345,7 @@ double Tsqr(cosmo* self, double k, error **err)
       switch (self->transfer) {
 	 case bbks :
 	    Gamma_eff = Gamma_Sugiyama(self);
-	    f1 = Tsqr_one(self, k, Gamma_eff, err);
+	    f1 = Tsqr_one(self, k, a, Gamma_eff, err);
 	    forwardError(*err,__LINE__,0);
 	    break;
 	 case eisenhu :
@@ -1243,12 +1353,12 @@ double Tsqr(cosmo* self, double k, error **err)
 			 ce_negative, "Transfer function variables not initialised", *err, __LINE__, 0.0);
 	    Gamma_eff = self->Omega_m*self->h_100*(self->transfer_alpha_Gamma + 
 						   (1.0-self->transfer_alpha_Gamma)/(1.0+dsqr(dsqr(0.43*k*self->transfer_s))));
-	    f1 = Tsqr_one(self, k, Gamma_eff, err);
+	    f1 = Tsqr_one(self, k, a, Gamma_eff, err);
 	    forwardError(*err,__LINE__,0);
 	    break;
 	 case eisenhu_osc :
 	    testErrorRet(self->transfer_s<0, ce_negative, "Transfer function variable not initialised", *err, __LINE__, 0.0);
-	    f1 = Tsqr_one(self, k, -1.0, err);
+	    f1 = Tsqr_one(self, k, a, -1.0, err);
 	    break;
 	 default :
 	    *err = addErrorVA(ce_unknown, "Unknown transfer type %d", *err, __LINE__, self->transfer);
@@ -1405,7 +1515,7 @@ double P_L(cosmo* self, double a, double k, error **err)
 
    } else {
 
-      k_pivot = 0.05; // /self->h_100;      /* 0.05 Mpc^{-1}  = 0.05/h h Mpc^{-1} */
+      k_pivot = 0.000002; // /self->h_100;      /* 0.05 Mpc^{-1}  = 0.05/h h Mpc^{-1} */
 
       /* See background.uchicago.edu/~whu/Presentations/trieste_print2.pdf p. 36 */
       pl *= self->As;
@@ -1432,7 +1542,7 @@ double P_L_nonorm(cosmo* self, double a, double k, error **err)
    switch (self->transfer) {
       case bbks : case eisenhu : case eisenhu_osc :
          d    = D_plus(self, a, 1, err);          forwardError(*err,__LINE__,0);
-         tt   = Tsqr(self, k, err);               forwardError(*err,__LINE__,0);
+         tt   = Tsqr(self, a, k, err);               forwardError(*err,__LINE__,0);
          break;
       default :
          *err = addError(ce_transfer, "Wrong transfer type", *err, __LINE__);
@@ -1678,19 +1788,21 @@ double slope_NL(double n, double ncur, double om_m, double om_v)
    return 3.0*(f1-1.0) + gam - 3.0;
 }
 
-void halofit(double k, double n, double ncur, double knl, double plin, 
-	     double om_m, double om_v, double *pnl, nonlinear_t nonlinear, double aa, cosmo *self,
-	     error **err)
+void halofit(double k, double n, double ncur, double knl, double plin,
+             double om_m, double om_v, double om_nu, double *pnl, nonlinear_t nonlinear, double aa, cosmo *self,
+             error **err)
 {
    double gam,a,b,c,xmu,xnu,alpha,beta,f1,f2,f3;
    double y, ysqr;
    double f1a,f2a,f3a,f1b,f2b,f3b,frac,pq,ph;
    double nsqr, w;
-
+   double fnu, tilplin, ksqr, Qnu;
+    
    nsqr  = n*n;
    f1b   = pow(om_m, -0.0307);
    f2b   = pow(om_m, -0.0585);
    f3b   = pow(om_m, 0.0743);
+   fnu   = om_nu/om_m;
 
    if (nonlinear == smith03_revised) {
       /* Takahashi et al. 2012 */
@@ -1703,9 +1815,12 @@ void halofit(double k, double n, double ncur, double knl, double plin,
       a = pow(10.0, a);
       b = pow(10.0, -0.5642 + 0.5864*n + 0.5716*nsqr - 1.5474*ncur + 0.2279*om_v*(1.0 + w));
       c = pow(10.0, 0.3698 + 2.0404*n + 0.8161*nsqr + 0.5869*ncur);
-      gam = 0.1971 - 0.0843*n + 0.8460*ncur;
+      gam = 0.1971 - 0.0843*n + 0.8460*ncur; // Kenengwenti
       alpha = fabs(6.0835 + 1.3373*n - 0.1959*nsqr - 5.5274*ncur);
       beta  = 2.0379 - 0.7354*n + 0.3157*nsqr + 1.2490*n*nsqr + 0.3980*nsqr*nsqr - 0.1682*ncur;
+
+      beta  = beta + fnu * (-6.49 + 1.44*nsqr);
+
       xmu   = 0.0;
       xnu   = pow(10.0, 5.2105 + 3.6902*n);
 
@@ -1726,7 +1841,9 @@ void halofit(double k, double n, double ncur, double knl, double plin,
       alpha = 1.38848+0.3701*n-0.1452*nsqr;
       beta  = 0.8291+0.9854*n+0.3400*nsqr;
 
-      if(fabs(1-om_m)>0.01) {
+      beta  = beta + fnu * (-6.49 + 1.44*nsqr);
+
+      if (fabs(1-om_m)>0.01) {
          f1a = pow(om_m,(-0.0732));
          f2a = pow(om_m,(-0.1423));
          f3a = pow(om_m,(0.0725));
@@ -1759,7 +1876,14 @@ void halofit(double k, double n, double ncur, double knl, double plin,
    ysqr = y*y;
    ph = a*pow(y,f1*3)/(1+b*pow(y,f2)+pow(f3*c*y,3-gam));
    ph = ph/(1+xmu/y+xnu/ysqr);
-   pq = plin*pow(1+plin,beta)/(1+plin*alpha)*exp(-y/4.0-ysqr/8.0);
+
+   Qnu = fnu*(2.080-12.4*(om_m-0.3));
+   Qnu = Qnu/(1 + 0.00120*pow(y,3));
+   ph = ph*(1+Qnu);
+   ksqr = k*k;
+   tilplin = plin*(1+((26.3*fnu*ksqr)/(1+1.5*ksqr)));
+   pq = plin*pow(1+tilplin,beta)/(1+tilplin*alpha)*exp(-y/4.0-ysqr/8.0);
+
    *pnl = pq + ph;
 
    testErrorRet(!isfinite(*pnl), ce_overflow, "Power spectrum pnl not finite", *err, __LINE__,);
@@ -1855,7 +1979,8 @@ double P_NL_fitting(cosmo* self, double a, double k_NL, error **err)
    double Delta_NL, Delta_L, k_L, lnk_NL=0.0;
    double precision = precision_min;
 
-   double omm=0.0, omv=0.0, amp=0.0;
+   double omm=0.0, omv=0.0, onu = 0.0, amp=0.0;
+
    double logr1, logr2 ,diff, rmid, sig, d1, d2;
    double rknl=0.0, rneff=0.0, rncur=0.0;
 
@@ -1911,6 +2036,7 @@ double P_NL_fitting(cosmo* self, double a, double k_NL, error **err)
             EE = Esqr(self, aa, 0, err);           forwardError(*err,__LINE__,0);
             omm = Omega_m_a(self, aa, EE, err);    forwardError(*err,__LINE__,0);
             omv = Omega_de_a(self, aa, EE, err);   forwardError(*err,__LINE__,0);
+            onu = Omega_nu_a(self, aa, EE, err);   forwardError(*err,__LINE__,0);
             golinear = 0;
 
             /* Find non-linear scale with iterative bisection */
@@ -2000,7 +2126,7 @@ iter_start:
                Delta_L = amp*amp*sm2_transfer(self, k_L, err);
                forwardError(*err, __LINE__, 0);
                if (golinear==0) {
-                  halofit(k_L, rneff, rncur, rknl, Delta_L, omm, omv, &Delta_NL, self->nonlinear, aa, self, err);
+                  halofit(k_L, rneff, rncur, rknl, Delta_L, omm, omv, onu, &Delta_NL, self->nonlinear, aa, self, err);
                   forwardError(*err, __LINE__, 0);
                } else if (golinear==1) {
                   Delta_NL = Delta_L;
@@ -2445,5 +2571,5 @@ int idx_zzz(int i_bin, int j_bin, int k_bin, int Nzbin)
       }
    }
 
-   return -1;
+   return -1; // printf
 }

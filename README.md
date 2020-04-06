@@ -27,10 +27,12 @@ Web page: http://cosmostat.org/nicaea
   - Catherine Heymans (intrinsic alignment)
 
   - Francois Lanusse (github, python support)
+  
+  - Shiming Gu (massive neutrinos)
 
 ### Version
 
-2.7.3
+2.7.4
 
 ### Download, compile, and run nicaea
 
