@@ -2984,7 +2984,7 @@ double chi2_lensing(cosmo_lens* csm, datcov* dc, int return_model, double **mode
    double res, logL, lndetC;
    lensdata_t type;
    gsl_matrix_view A, B;
-   gsl_matrix *tmp, *tmp2;
+   gsl_matrix *tmp=NULL, *tmp2;
    gsl_vector_view x;
 
 
