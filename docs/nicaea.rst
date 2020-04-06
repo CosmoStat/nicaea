@@ -28,6 +28,8 @@ Catherine Heymans (intrinsic alignment)
 
 Francois Lanusse (enhancements and interface)
 
+Shiming Gu (massive neutrinos)
+
 Documentation
 =============
 
