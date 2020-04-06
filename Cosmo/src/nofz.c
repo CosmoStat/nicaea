@@ -398,7 +398,7 @@ double *read_par_nz_hist(const char *name, int *Nnz, error **err)
 void get_nofz_t_file(const char *name, nofz_t *nofz, photz_t *photz, error **err)
 {
    FILE *F;
-   int n, j, s_length, only_ws;
+   int n, j=0, s_length, only_ws;
    struct { char snofz[128], sphotz[128]; nofz_t nofz; photz_t photz; } tmp;
    char dummy[128];
 

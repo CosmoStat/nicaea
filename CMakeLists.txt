@@ -31,7 +31,7 @@ set(LIBS ${LIBS} fftw3 m)
 #
 # Compilation flags
 #
-set(CMAKE_C_FLAGS "-Wall -Wuninitialized -pedantic -O3 -fPIC -std=gnu9x")
+set(CMAKE_C_FLAGS "-Wuninitialized -Wdeprecated-declarations -pedantic -O3 -fPIC -std=gnu9x")
 
 
 #
