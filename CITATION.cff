@@ -1,0 +1,22 @@
+cff-version: 1.1.0
+message: "Please cite the following works when using this software: https://ui.adsabs.harvard.edu/abs/2009A%2526A...497..677K"
+authors:
+- family-names: Kilbinger
+  given-names: Martin
+- family-names: Benabed
+  given-names: Karim
+- family-names: Coupon
+  given-names: Jean
+- family-names: McCracken
+  given-names: Henry J.
+title: "nicaea: NumerIcal Cosmology And lEnsing cAlculations"
+version: "2.7.4"
+date-released: 04/2020
+identifiers:
+ - type: "ascl-id"
+   value: "2302.001"
+ - type: "doi"
+   value: "10.1051/0004-6361/200811247"
+ - type: "bibcode"
+   value: "2023ascl.soft02001K"
+abstract: "nicaea calculates cosmology and weak-lensing quantities and functions from theoretical models of the large-scale structure. Written in C, it can compute the Hubble parameter, distances, and geometry for background cosmology, and linear perturbations, including growth factor, transfer function, cluster mass function, and linear 3D power spectra. It also calculates fitting formulae for non-linear power spectra, emulators, and halo model for Non-linear evolution, and the HOD model for galaxy clustering. In addition, nicaea can compute quantities for cosmic shear such as the convergence power spectrum, second-order correlation functions and derived second-order quantities, and third-order aperture mass moment; it can also calculate CMB anisotropies via CAMB (ascl:1102.026)."
